@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Proiect_DAW.Data;
+using Proiect_DAW.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
