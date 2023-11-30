@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\mihne\\Source\\Repos\\Proiect-Dezvoltarea-Aplicatiilor-Web-DAW\\Proiect DAW\\Proiect DAW\\Proiect DAW.csproj": {}
+    "C:\\GitHubDesktop\\Proiect-Dezvoltarea-Aplicatiilor-Web-DAW\\Proiect DAW\\Proiect DAW\\Proiect DAW.csproj": {}
   },
   "projects": {
-    "C:\\Users\\mihne\\Source\\Repos\\Proiect-Dezvoltarea-Aplicatiilor-Web-DAW\\Proiect DAW\\Proiect DAW\\Proiect DAW.csproj": {
+    "C:\\GitHubDesktop\\Proiect-Dezvoltarea-Aplicatiilor-Web-DAW\\Proiect DAW\\Proiect DAW\\Proiect DAW.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\mihne\\Source\\Repos\\Proiect-Dezvoltarea-Aplicatiilor-Web-DAW\\Proiect DAW\\Proiect DAW\\Proiect DAW.csproj",
+        "projectUniqueName": "C:\\GitHubDesktop\\Proiect-Dezvoltarea-Aplicatiilor-Web-DAW\\Proiect DAW\\Proiect DAW\\Proiect DAW.csproj",
         "projectName": "Proiect DAW",
-        "projectPath": "C:\\Users\\mihne\\Source\\Repos\\Proiect-Dezvoltarea-Aplicatiilor-Web-DAW\\Proiect DAW\\Proiect DAW\\Proiect DAW.csproj",
-        "packagesPath": "C:\\Users\\mihne\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\mihne\\Source\\Repos\\Proiect-Dezvoltarea-Aplicatiilor-Web-DAW\\Proiect DAW\\Proiect DAW\\obj\\",
+        "projectPath": "C:\\GitHubDesktop\\Proiect-Dezvoltarea-Aplicatiilor-Web-DAW\\Proiect DAW\\Proiect DAW\\Proiect DAW.csproj",
+        "packagesPath": "C:\\Users\\razva\\.nuget\\packages\\",
+        "outputPath": "C:\\GitHubDesktop\\Proiect-Dezvoltarea-Aplicatiilor-Web-DAW\\Proiect DAW\\Proiect DAW\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\mihne\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\razva\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -22,8 +22,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "https://api.nuget.org/v3/index.json": {},
-          "https://contoso.com/packages/": {}
+          "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net6.0": {
