@@ -24,4 +24,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\Categories\" />
+    <Folder Include="Views\Discussions\" />
+  </ItemGroup>
+
 </Project>
