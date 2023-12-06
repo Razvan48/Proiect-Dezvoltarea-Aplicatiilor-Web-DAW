@@ -31,7 +31,7 @@ namespace Proiect.Controllers
 
         public IActionResult Show(int id)
         {
-            Category category = db.Categories.Where(cat => cat.Id == id).First();
+            Category category = db.Categories.Include("Discussions").Where(cat => cat.Id == id).First();
 
             if (TempData.ContainsKey("message"))
             {

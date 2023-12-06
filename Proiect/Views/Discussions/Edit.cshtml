@@ -1,0 +1,35 @@
+﻿@model Proiect.Models.Discussion
+
+@{
+    ViewData["Title"] = "Discussions Edit";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-6 offset-3">
+            @using (Html.BeginForm(actionName: "Edit", controllerName: "Discussions", routeValues: new { id = Model.Id }))
+            {
+                @Html.Label("Title", "Discussion Title")
+                <br />
+                @Html.TextBox("Title", null, new { @class = "form-control"})
+                @Html.ValidationMessageFor(m => m.Title, null, new { @class = "text-danger"})
+                <br />
+
+                @Html.Label("Content", "Discussion Content")
+                <br />
+                @Html.TextArea("Content", null, new { @class = "form-control"})
+                @Html.ValidationMessage("Content", null, new { @class = "text-danger"})
+                <br />
+
+                <br />
+                <button class="btn btn-success" type="submit">Submit Changes</button>
+
+                <br />
+                <br />
+                <br />
+
+                @Html.ValidationSummary(false, "", new { @class = "text-danger"})
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,25 @@
+﻿@model Proiect.Models.Discussion
+
+@{
+    ViewData["Title"] = "Discussions Show";
+}
+
+<h2>@Model.Title</h2>
+
+<br />
+<br />
+<br />
+
+<h2>@Model.Content</h2>
+<p>@Model.Date</p>
+
+<div>
+    <a class="btn btn-outline-primary" href="/Discussions/Edit/@Model.Id"><i class="bi bi-pencil-square"></i>Edit Discussion</a>
+</div>
+<div>
+    <form method="post" action="/Discussions/Delete/@Model.Id">
+        <button class="btn btn-outline-danger" type="submit"><i class="bi bi-trash"></i>Delete Discussion</button>
+    </form>
+</div>
+
+@*Mai jos vor fi comentariile discutiei + butoane de adaugat/sters/editat comentariile*@
