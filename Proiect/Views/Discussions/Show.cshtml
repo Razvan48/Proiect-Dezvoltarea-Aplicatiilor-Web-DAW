@@ -14,7 +14,7 @@
 <p>@Model.Date</p>
 
 <div>
-    <a class="btn btn-outline-primary" href="/Discussions/Edit/@Model.Id"><i class="bi bi-pencil-square"></i>Edit Discussion</a>
+    <a class="btn btn-outline-primary" href="/Discussions/Edit?Id=@Model.Id&categoryId=@Model.CategoryId"><i class="bi bi-pencil-square"></i>Edit Discussion</a>
 </div>
 <div>
     <form method="post" action="/Discussions/Delete/@Model.Id">

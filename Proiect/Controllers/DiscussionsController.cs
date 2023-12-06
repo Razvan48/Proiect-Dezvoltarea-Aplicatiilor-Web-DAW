@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Proiect.Data;
 using Proiect.Models;
 
@@ -20,9 +21,23 @@ namespace Proiect.Controllers
             _roleManager = roleManager;
         }
 
-        public IActionResult Edit(int id)
+        public IActionResult Show(int id)
         {
             Discussion discussion = db.Discussions.Where(dis => dis.Id == id).First();
+
+            if (TempData.ContainsKey("message"))
+            {
+                ViewBag.Message = TempData["message"].ToString();
+            }
+
+            return View(discussion);
+        }
+
+        public IActionResult Edit(int id, int categoryId)
+        {
+            Discussion discussion = db.Discussions.Where(dis => dis.Id == id).First();
+
+            ViewBag.CategoryId = categoryId;
 
             return View(discussion);
         }
@@ -40,7 +55,7 @@ namespace Proiect.Controllers
                 discussion.Content = requestDiscussion.Content;
                 db.SaveChanges();
                 TempData["message"] = "Discussion successfully edited";
-                return RedirectToAction("Index");
+                return RedirectToAction("Show", "Categories", new { Id = discussion.CategoryId });
             }
             else
             {
@@ -71,7 +86,7 @@ namespace Proiect.Controllers
 
                 TempData["message"] = "Discussion successfully added";
 
-                return RedirectToAction("/Categories/Index/" + discussion.CategoryId);
+                return RedirectToAction("Show", "Categories", new { Id = discussion.CategoryId });
             }
             else
             {
@@ -91,7 +106,7 @@ namespace Proiect.Controllers
 
             TempData["message"] = "Discussion successfully deleted";
 
-            return RedirectToAction("/Categories/Show/" + categoryId);
+            return RedirectToAction("Show", "Categories", new { Id = categoryId });
         }
     }
 }

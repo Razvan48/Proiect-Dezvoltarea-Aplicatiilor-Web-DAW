@@ -1,6 +1,6 @@
 ﻿@model Proiect.Models.Discussion
 
-@* cauzeaza conflict cu campul title din formularul de mai jos
+@* cauzeaza conflict cu title din formularul de mai jos
 @{
     ViewData["Title"] = "Discussions New";
 }
@@ -12,15 +12,13 @@
 <br />
 <br />
 
-@*Debug*@
-<p>@ViewBag.CategoryId</p>
-
 <div class="container mt-5">
     <div class="row">
         <div class="col-6 offset-3">
             @using (Html.BeginForm(actionName: "New", controllerName: "Discussions"))
             {
-                @Html.HiddenFor(m => m.CategoryId, new { Value = ViewBag.CategoryId}) @*CategoryId este in ViewBag*@
+                @*@Html.HiddenFor(m => m.CategoryId, new { Value = ViewBag.CategoryId}) CategoryId este in ViewBag*@
+                @Html.HiddenFor(m => m.CategoryId)
 
                 @Html.Label("Title", "Discussion Title")
                 <br />
