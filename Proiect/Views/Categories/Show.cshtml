@@ -1,0 +1,24 @@
+﻿@model Proiect.Models.Category
+
+@{
+    ViewData["Title"] = "Categories Show";
+}
+
+<h2>@Model.CategoryName</h2>
+
+<br />
+<br />
+<br />
+
+<div class="d-flex justify-content-left">
+    <a class="btn btn-primary" href="/Categories/Edit/@Model.Id">Edit Discussion Category</a>
+    <br />
+</div>
+
+<div class="d-flex justify-content-left">
+    <form method="post" action="/Categories/Delete/@Model.Id">
+        <button class="btn btn-danger" type="submit">Delete Discussion Category</button>
+    </form>
+</div>
+
+@*De adaugat o lista cu discutiile pe aceasta categorie (paginata + posibilitate de a sorta dupa nume / popularitate (numar articole?)*@

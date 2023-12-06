@@ -48,6 +48,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+// putem lasa Home/Index default route
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

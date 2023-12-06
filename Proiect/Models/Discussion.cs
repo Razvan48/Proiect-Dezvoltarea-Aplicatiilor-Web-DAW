@@ -17,8 +17,8 @@ namespace Proiect.Models
 
         public DateTime Date { get; set; }
 
-        //[Razvan] acest required va fi degeaba, putem sa avem butonul de adauga
-        //discutie in interiorul unei categorii de discutie si atunci implicit se stie categoria
+        // acest required va fi degeaba, putem sa avem butonul de adauga
+        // discutie in interiorul unei categorii de discutie si atunci implicit se stie categoria
         [Required(ErrorMessage = "Discussion category id is compulsory")]
         public int? CategoryId { get; set; }
 
