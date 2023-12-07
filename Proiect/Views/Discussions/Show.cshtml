@@ -6,12 +6,39 @@
 
 <h2>@Model.Title</h2>
 
+<div class="d-flex">
+    <div class="d-flex" style="margin-right: 50px;">
+        <span>Asked</span>
+        <div>: @Model.Date</div>
+    </div>
+    <div class="d-flex" style="margin-right: 50px;">
+        <span>Modified</span>
+        <div>: ultima data cand a fost editata intrebarea</div>
+    </div>
+    <div class="d-flex">
+        <span>Viewed</span>
+        <div>: nr_vizionari</div>
+    </div>
+</div>
+
+<hr />
+
+
+
+@* TODO: de facut view patial: avem nevoie pentru intrebare + comentarii *@
+<div class="d-inline-flex flex-column">
+    <button type="button" class="btn btn-outline-success"><i class="bi bi-arrow-up-square h2"></i></button>
+    <div style="margin-top: 10px; margin-bottom: 10px;">nr_voturi</div>
+    <button type="button" class="btn btn-outline-danger"><i class="bi bi-arrow-down-circle h2"></i></button>
+</div>
+
+
+
 <br />
 <br />
 <br />
 
 <h2>@Model.Content</h2>
-<p>@Model.Date</p>
 
 <div>
     <a class="btn btn-outline-primary" href="/Discussions/Edit?Id=@Model.Id&categoryId=@Model.CategoryId"><i class="bi bi-pencil-square"></i>Edit Discussion</a>
@@ -23,3 +50,82 @@
 </div>
 
 @*Mai jos vor fi comentariile discutiei + butoane de adaugat/sters/editat comentariile*@
+
+<br />
+<br />
+<br />
+
+<div class="d-flex justify-content-between">
+    <div>Raspunsuri: nr_raspunsuri_primite</div>
+    <div>Sortare: criterii_sortare</div>
+</div>
+
+<br />
+<br />
+<br />
+
+@* Afisare comentarii impreuna cu butoanele de editare si stergere *@
+@foreach (var answer in Model.Answers)
+{
+    <div class="container">
+        <div class="row">
+            <div class="col-md-2"></div>
+
+            <div class="col-md-8">
+                <p>@answer.Content</p>
+                <small>@answer.Date</small>
+                <strong><i class="bi bi-person"></i>@answer.User.UserName</strong>
+                <br>
+
+                @* TODO: adauga butoanele de edit+stergere in functie de rolul utilizatorului *@
+            </div>
+
+            <div class="col-md-2"></div>
+        </div>
+    </div>
+}
+
+<br />
+<br />
+<br />
+
+@* Afisarea mesajului de validare *@
+@if (ViewBag.Message != null)
+{
+    <h2 class="@ViewBag.Alert p-3 rounded-3 text-center mb-5">@ViewBag.Message</h2>
+}
+
+@* Afisarea formularului in care se poate adauga un raspuns nou *@
+<div class="container">
+    <h4>Raspunsul tau</h4>
+    <div class="row">
+        <div class="col-md-2"></div>
+
+        <div class="col-md-8">
+            <form method="post" action="/Discussions/Show/@Model.Id">           @* TODO *@
+                <div class="card-body">
+                    <input type="hidden" name="DiscussionId" value="@Model.Id" />   @* TODO *@
+
+                    <label>Continut raspunsul tau</label>
+                    <br />
+                    <textarea class="form-control" name="Content"></textarea>
+                    @Html.ValidationMessage("Content", null, new { @class = "text-danger" })
+                    <br /> <br />
+
+                    <button class="btn btn-success" type="submit">Posteaza raspunsul tau</button>
+
+                    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                    <br />
+                </div>
+            </form>
+        </div>
+
+        <div class="col-md-2"></div>
+    </div>
+</div>
+
+
+@* TODO: de facut view patial comentarii: avem nevoie pentru intrebare + raspunsuri *@
+
+@* TODO: Related questions *@
+

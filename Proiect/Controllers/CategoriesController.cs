@@ -24,6 +24,7 @@ namespace Proiect.Controllers
             if (TempData.ContainsKey("message"))
             {
                 ViewBag.Message = TempData["message"].ToString();
+                ViewBag.Alert = TempData["messageType"];
             }
 
             return View();
@@ -36,6 +37,7 @@ namespace Proiect.Controllers
             if (TempData.ContainsKey("message"))
             {
                 ViewBag.Message = TempData["message"].ToString();
+                ViewBag.Alert = TempData["messageType"];
             }
 
             return View(category);
@@ -57,7 +59,10 @@ namespace Proiect.Controllers
             {
                 category.CategoryName = requestCategory.CategoryName;
                 db.SaveChanges();
+
                 TempData["message"] = "Discussion Category successfully edited";
+                TempData["messageType"] = "alert-success";
+
                 return RedirectToAction("Index");
             }
             else
@@ -82,6 +87,7 @@ namespace Proiect.Controllers
                 db.SaveChanges();
 
                 TempData["message"] = "Discussion Category successfully added";
+                TempData["messageType"] = "alert-success";
 
                 return RedirectToAction("Index");
             }
@@ -100,9 +106,12 @@ namespace Proiect.Controllers
             db.SaveChanges();
 
             TempData["message"] = "Discussion Category successfully deleted";
+            TempData["messageType"] = "alert-success";
 
             return RedirectToAction("Index");
         }
     }
 }
+
+// TODO: Auth + mesaje validare
 

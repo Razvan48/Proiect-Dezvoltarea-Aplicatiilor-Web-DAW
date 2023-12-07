@@ -22,6 +22,11 @@ namespace Proiect.Models
         [Required(ErrorMessage = "Discussion category id is compulsory")]
         public int? CategoryId { get; set; }
 
+        // TODO: public virtual Category? Category { get; set; }
+
+        // o discutie are mai multe raspunsuri => ICollection
+        public virtual ICollection<Answer>? Answers { get; set; }
+
         // o discutie este postata de un user => FK
         public string? UserId { get; set; }
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Proiect.Data;
@@ -21,27 +22,85 @@ namespace Proiect.Controllers
             _roleManager = roleManager;
         }
 
+        // Afisare discutie impreuna cu toate raspunsurile
+        [HttpGet]
         public IActionResult Show(int id)
         {
-            Discussion discussion = db.Discussions.Where(dis => dis.Id == id).First();
+            // TODO: .Include(User) => afisare cine a postat discutia
+
+            Discussion discussion = db.Discussions.Include("Answers").Include("Answers.User")
+                                    .Where(dis => dis.Id == id)
+                                    .First();
 
             if (TempData.ContainsKey("message"))
             {
                 ViewBag.Message = TempData["message"].ToString();
+                ViewBag.Alert = TempData["messageType"];
             }
 
+            // TODO: add SetAccessRights() pt butoanele de Edit+Delete
+
             return View(discussion);
         }
 
+        // Postare raspuns
+        [Authorize(Roles = "User,Admin")]
+        [HttpPost]
+        public IActionResult Show([FromForm] Answer answer)
+        {
+            answer.Date = DateTime.Now;
+            answer.UserId = _userManager.GetUserId(User);
+
+            if (ModelState.IsValid)
+            {
+                db.Answers.Add(answer);
+                db.SaveChanges();
+
+                TempData["message"] = "Raspunsul a fost postat";
+                TempData["messageType"] = "alert-success";
+
+                return Redirect("/Discussions/Show/" + answer.DiscussionId);
+            }
+            else
+            {
+                Discussion discussion = db.Discussions.Include("Answers").Include("Answers.User")
+                                        .Where(dis => dis.Id == answer.DiscussionId)
+                                        .First();
+
+                // TODO: add SetAccessRights() pt butoanele de Edit+Delete
+                
+                return View(discussion);
+            }
+        }
+
+        // Editare discutie
+        [Authorize(Roles = "User,Admin")]
+        [HttpGet]
         public IActionResult Edit(int id, int categoryId)
         {
-            Discussion discussion = db.Discussions.Where(dis => dis.Id == id).First();
+            Discussion discussion = db.Discussions
+                                    .Where(dis => dis.Id == id)
+                                    .First();
 
+            // TODO? : Nu e mai usor sa adaugam in model un Category?
             ViewBag.CategoryId = categoryId;
 
-            return View(discussion);
+            // verificam daca discutia ii apartine user-ului care incearca sa editeze /SAU/ daca este admin
+            if (discussion.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
+            {
+                return View(discussion);
+            }
+            else
+            {
+                TempData["message"] = "Nu aveti dreptul sa faceti modificari asupra unei discutii care nu va apartine";
+                TempData["messageType"] = "alert-danger";
+
+                return Redirect("/Discussions/Show/" + discussion.Id);
+            }
         }
 
+        // Se adauga discutia editata in baza de date
+        [Authorize(Roles = "User,Admin")]
         [HttpPost]
         public IActionResult Edit(int id, Discussion requestDiscussion)
         {
@@ -51,11 +110,25 @@ namespace Proiect.Controllers
 
             if (ModelState.IsValid)
             {
-                discussion.Title = requestDiscussion.Title;
-                discussion.Content = requestDiscussion.Content;
-                db.SaveChanges();
-                TempData["message"] = "Discussion successfully edited";
-                return RedirectToAction("Show", "Categories", new { Id = discussion.CategoryId });
+                // verificam daca discutia ii apartine user-ului care incearca sa editeze /SAU/ daca este admin
+                if (discussion.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
+                {
+                    discussion.Title = requestDiscussion.Title;
+                    discussion.Content = requestDiscussion.Content;
+                    db.SaveChanges();
+
+                    TempData["message"] = "Discussion successfully edited";
+                    TempData["messageType"] = "alert-success";
+
+                    return RedirectToAction("Show", "Categories", new { Id = discussion.CategoryId });
+                }
+                else
+                {
+                    TempData["message"] = "Nu aveti dreptul sa faceti modificari asupra unei discutii care nu va apartine";
+                    TempData["messageType"] = "alert-danger";
+
+                    return RedirectToAction("Show", "Categories", new { Id = discussion.CategoryId });
+                }
             }
             else
             {
@@ -63,8 +136,9 @@ namespace Proiect.Controllers
             }
         }
 
-        // Nu stiu daca e cel mai frumos mod, dar new-ul de mai jos primeste ca parametru si id-ul
-        // categoriei unde va fi adaugat.
+        // TODO: Nu stiu daca e cel mai frumos mod, dar new-ul de mai jos primeste ca parametru si id-ul categoriei unde va fi adaugat
+        [Authorize(Roles = "User,Admin")]
+        [HttpGet]
         public IActionResult New(int categoryId)
         {
             Discussion discussion = new Discussion();
@@ -74,10 +148,13 @@ namespace Proiect.Controllers
             return View(discussion);
         }
 
+        // Adauga noua discutie in baza de date
+        [Authorize(Roles = "User,Admin")]
         [HttpPost]
         public IActionResult New(Discussion discussion)
         {
             discussion.Date = DateTime.Now;
+            discussion.UserId = _userManager.GetUserId(User);
 
             if (ModelState.IsValid)
             {
@@ -85,6 +162,7 @@ namespace Proiect.Controllers
                 db.SaveChanges();
 
                 TempData["message"] = "Discussion successfully added";
+                TempData["messageType"] = "alert-success";
 
                 return RedirectToAction("Show", "Categories", new { Id = discussion.CategoryId });
             }
@@ -94,19 +172,37 @@ namespace Proiect.Controllers
             }
         }
 
+        [Authorize(Roles = "User,Admin")]
         [HttpPost]
         public ActionResult Delete(int id)
         {
-            Discussion discussion = db.Discussions.Find(id);
+            // TODO: ERROR: nu sterge si Answers automat
 
+            Discussion discussion = db.Discussions.Include("Answers")
+                                    .Where(dis => dis.Id == id)
+                                    .First();
+
+            // TODO: adauga in model Category + include mai sus
             int? categoryId = discussion.CategoryId;
 
-            db.Discussions.Remove(discussion);
-            db.SaveChanges();
+            // verificam daca discutia ii apartine user-ului care incearca sa editeze /SAU/ daca este admin
+            if (discussion.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
+            {
+                db.Discussions.Remove(discussion);
+                db.SaveChanges();
 
-            TempData["message"] = "Discussion successfully deleted";
+                TempData["message"] = "Discussion successfully deleted";
+                TempData["messageType"] = "alert-success";
 
-            return RedirectToAction("Show", "Categories", new { Id = categoryId });
+                return RedirectToAction("Show", "Categories", new { Id = categoryId });
+            }
+            else
+            {
+                TempData["message"] = "Discussion successfully deleted";
+                TempData["messageType"] = "alert-danger";
+
+                return RedirectToAction("Show", "Categories", new { Id = categoryId });
+            }
         }
     }
 }
