@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Proiect.Data;
 
@@ -11,9 +12,10 @@ using Proiect.Data;
 namespace Proiect.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231209142727_CommentModel")]
+    partial class CommentModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -405,8 +407,8 @@ namespace Proiect.Data.Migrations
 
             modelBuilder.Entity("Proiect.Models.Comment", b =>
                 {
-                    b.HasOne("Proiect.Models.Answer", "Answer")
-                        .WithMany("Comments")
+                    b.HasOne("Proiect.Models.Discussion", "Answer")
+                        .WithMany()
                         .HasForeignKey("AnswerId");
 
                     b.HasOne("Proiect.Models.ApplicationUser", "User")
@@ -433,11 +435,6 @@ namespace Proiect.Data.Migrations
                     b.Navigation("Category");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Proiect.Models.Answer", b =>
-                {
-                    b.Navigation("Comments");
                 });
 
             modelBuilder.Entity("Proiect.Models.ApplicationUser", b =>

@@ -23,13 +23,13 @@ namespace Proiect.Controllers
         }
 
         // oricine are dreptul sa vada
-        // Afisare discutie impreuna cu toate raspunsurile
+        // Afisare discutie impreuna cu toate raspunsurile + comentariile
         [HttpGet]
         public IActionResult Show(int id)
         {
             // TODO: .Include(User) => afisare cine a postat discutia
 
-            Discussion discussion = db.Discussions.Include("Answers").Include("Answers.User")
+            Discussion discussion = db.Discussions.Include("Answers").Include("Answers.User").Include("Answers.Comments").Include("Answers.Comments.User")  // TODO: check
                                     .Where(dis => dis.Id == id)
                                     .First();
 
@@ -47,7 +47,7 @@ namespace Proiect.Controllers
         // Postare raspuns
         [Authorize(Roles = "User,Admin")]
         [HttpPost]
-        public IActionResult Show([FromForm] Answer answer)
+        public IActionResult ShowAnswer([FromForm] Answer answer)
         {
             answer.Date = DateTime.Now;
             answer.UserId = _userManager.GetUserId(User);
@@ -64,9 +64,41 @@ namespace Proiect.Controllers
             }
             else
             {
-                Discussion discussion = db.Discussions.Include("Answers").Include("Answers.User")
+                Discussion discussion = db.Discussions.Include("Answers").Include("Answers.User").Include("Answers.Comments").Include("Answers.Comments.User")  // TODO: check
                                         .Where(dis => dis.Id == answer.DiscussionId)
                                         .First();
+
+                // TODO: add SetAccessRights() pt butoanele de Edit+Delete la raspunsuri
+
+                return View(discussion);
+            }
+        }
+
+        // Postare comentariu
+        [Authorize(Roles = "User,Admin")]
+        [HttpPost]
+        public IActionResult ShowComment([FromForm] Comment comment)
+        {
+            comment.Date = DateTime.Now;
+            comment.UserId = _userManager.GetUserId(User);
+
+            if (ModelState.IsValid)
+            {
+                db.Comments.Add(comment);
+                db.SaveChanges();
+
+                TempData["message"] = "Comentariul a fost postat";
+                TempData["messageType"] = "alert-success";
+
+                Answer answer = db.Answers.Find(comment.AnswerId);
+
+                return Redirect("/Discussions/Show/" + answer.DiscussionId);
+            }
+            else
+            {
+                Discussion discussion = db.Discussions.Include("Answers").Include("Answers.User").Include("Answers.Comments").Include("Answers.Comments.User")  // TODO: check
+                        .Where(dis => dis.Id == comment.Answer.DiscussionId)
+                        .First();
 
                 // TODO: add SetAccessRights() pt butoanele de Edit+Delete la raspunsuri
 

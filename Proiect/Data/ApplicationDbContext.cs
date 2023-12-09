@@ -14,6 +14,7 @@ namespace Proiect.Data
         public DbSet<Discussion> Discussions { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Answer> Answers { get; set; }
+        public DbSet<Comment> Comments { get; set; }
     }
 }
 

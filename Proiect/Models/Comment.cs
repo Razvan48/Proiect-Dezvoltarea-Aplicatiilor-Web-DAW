@@ -2,7 +2,7 @@
 
 namespace Proiect.Models
 {
-    public class Answer
+    public class Comment
     {
         [Key]
         public int Id { get; set; }
@@ -12,12 +12,9 @@ namespace Proiect.Models
 
         public DateTime Date { get; set; }
 
-        public int? DiscussionId { get; set; }
+        public int? AnswerId { get; set; }
 
-        public virtual Discussion? Discussion { get; set; }
-
-        // o discutie are mai multe comentarii => ICollection
-        public virtual ICollection<Comment>? Comments { get; set; }
+        public virtual Answer? Answer { get; set; }
 
         public string? UserId { get; set; }
 

@@ -78,6 +78,54 @@
                 <br>
 
                 @* TODO: adauga butoanele de edit+stergere in functie de rolul utilizatorului *@
+
+                @* Afiseaza comentariile la un raspuns *@
+                <div class="container">
+                    @foreach (var comment in answer.Comments)
+                    {
+                        <div class="row">
+                            <div class="col-md-2"></div>
+
+                            <div class="col-md-8">
+                                <p>@comment.Content</p>
+                                <small>@comment.Date</small>
+                                <strong><i class="bi bi-person"></i>@comment.User.UserName</strong>
+                                <br>
+                            </div>
+
+                            <div class="col-md-2"></div>
+                        </div>
+                    }
+                </div>
+
+                @* TODO: Afisarea formularului in care se poate adauga un comentariu nou *@
+                <div class="container">
+                    <h5>Comentariul tau</h5>
+                    <div class="row">
+                        <div class="col-md-2"></div>
+
+                        <div class="col-md-8">
+                            <form method="post" action="/Discussions/ShowComment/@answer.Id">   @* TODO *@
+                                <div class="card-body">
+                                    <input type="hidden" name="AnswerId" value="@answer.Id" />       @* TODO *@
+
+                                    <label>Continut comentariului tau</label>
+                                    <br />
+                                    <textarea class="form-control" name="Content"></textarea>
+                                    @Html.ValidationMessage("Content", null, new { @class = "text-danger" })
+                                    <br /> <br />
+
+                                    <button class="btn btn-success" type="submit">Posteaza comentariul tau</button>
+
+                                    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                                    <br />
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="col-md-2"></div>
+                    </div>
+                </div>
             </div>
 
             <div class="col-md-2"></div>
@@ -102,9 +150,9 @@
         <div class="col-md-2"></div>
 
         <div class="col-md-8">
-            <form method="post" action="/Discussions/Show/@Model.Id">           @* TODO *@
+            <form method="post" action="/Discussions/ShowAnswer/@Model.Id">
                 <div class="card-body">
-                    <input type="hidden" name="DiscussionId" value="@Model.Id" />   @* TODO *@
+                    <input type="hidden" name="DiscussionId" value="@Model.Id" />
 
                     <label>Continut raspunsul tau</label>
                     <br />
