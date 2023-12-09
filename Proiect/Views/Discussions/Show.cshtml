@@ -59,6 +59,10 @@
                         </div>
                     </div>
                 }
+                else
+                {
+                    <span></span>
+                }
 
                 <div class="d-flex flex-column justify-content-center" style="width: 200px; height: 70px;">
                     <div>
@@ -127,6 +131,10 @@
                             </div>
                         </div>
                     }
+                    else
+                    {
+                        <span></span>
+                    }
 
                     <div class="d-flex flex-column justify-content-center" style="width: 200px; height: 70px;">
                         <div>
@@ -151,14 +159,14 @@
                     <hr style="margin-bottom: 5px; margin-top: 5px;" />
                     <small>@comment.Content</small>
 
-                    <div class="d-flex justify-content-between">
+                    <div class="d-flex justify-content-between align-items-center" style="font-size: 14px">
                         <div>
                             <small> - </small>
                             <small><i class="bi bi-person"></i>@comment.User.UserName</small>
                             <small>@comment.Date</small>
                         </div>
                         <div>
-                            @if (answer.UserId == ViewBag.CurrentUser || ViewBag.IsAdmin)
+                            @if (comment.UserId == ViewBag.CurrentUser || ViewBag.IsAdmin)
                             {
                                 <a class="btn btn-sm btn-outline-primary" style="border: none; display: inline-block;" href="Comments/Edit/@comment.Id"><i class="bi bi-pencil-square"></i></a>
                                 <form method="post" style="display: inline-block; text-align: right;" action="/Comments/Delete/@comment.Id">
@@ -186,7 +194,7 @@
                     @Html.ValidationSummary(false, "", new { @class = "text-danger" })
                 </form>
                 <hr style="margin-bottom: 5px; margin-top: -10px;" />
-            </>
+            </div>
         </div>
     </div>
     <hr style="margin-bottom: 50px; margin-top: 50px; height: 1px; background-color: #e7700d; opacity: 0.75;" />

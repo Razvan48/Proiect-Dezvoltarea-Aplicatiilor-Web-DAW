@@ -8,7 +8,6 @@ using System.Data;
 
 namespace Proiect.Controllers
 {
-    [Authorize(Roles = "Admin")]
     public class CategoriesController : Controller
     {
         private readonly ApplicationDbContext db;
@@ -48,6 +47,7 @@ namespace Proiect.Controllers
             return View(category);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult Edit(int id)
         {
@@ -56,6 +56,7 @@ namespace Proiect.Controllers
             return View(category);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public IActionResult Edit(int id, Category requestCategory)
         {
@@ -77,6 +78,7 @@ namespace Proiect.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult New()
         {
@@ -85,6 +87,7 @@ namespace Proiect.Controllers
             return View(category);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public IActionResult New(Category category)
         {
@@ -104,6 +107,7 @@ namespace Proiect.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public ActionResult Delete(int id)
         {
