@@ -27,9 +27,7 @@ namespace Proiect.Controllers
         [HttpGet]
         public IActionResult Show(int id)
         {
-            // TODO: .Include(User) => afisare cine a postat discutia
-
-            Discussion discussion = db.Discussions.Include("Answers").Include("Answers.User").Include("Answers.Comments").Include("Answers.Comments.User")  // TODO: check
+            Discussion discussion = db.Discussions.Include("User").Include("Answers").Include("Answers.User").Include("Answers.Comments").Include("Answers.Comments.User")
                                     .Where(dis => dis.Id == id)
                                     .First();
 
@@ -39,7 +37,7 @@ namespace Proiect.Controllers
                 ViewBag.Alert = TempData["messageType"];
             }
 
-            // TODO: add SetAccessRights() pt butoanele de Edit+Delete la raspunsuri
+            SetAccessRights();
 
             return View(discussion);
         }
@@ -64,11 +62,11 @@ namespace Proiect.Controllers
             }
             else
             {
-                Discussion discussion = db.Discussions.Include("Answers").Include("Answers.User").Include("Answers.Comments").Include("Answers.Comments.User")  // TODO: check
+                Discussion discussion = db.Discussions.Include("User").Include("Answers").Include("Answers.User").Include("Answers.Comments").Include("Answers.Comments.User")
                                         .Where(dis => dis.Id == answer.DiscussionId)
                                         .First();
 
-                // TODO: add SetAccessRights() pt butoanele de Edit+Delete la raspunsuri
+                SetAccessRights();
 
                 return View(discussion);
             }
@@ -96,11 +94,11 @@ namespace Proiect.Controllers
             }
             else
             {
-                Discussion discussion = db.Discussions.Include("Answers").Include("Answers.User").Include("Answers.Comments").Include("Answers.Comments.User")  // TODO: check
+                Discussion discussion = db.Discussions.Include("User").Include("Answers").Include("Answers.User").Include("Answers.Comments").Include("Answers.Comments.User")
                         .Where(dis => dis.Id == comment.Answer.DiscussionId)
                         .First();
 
-                // TODO: add SetAccessRights() pt butoanele de Edit+Delete la raspunsuri
+                SetAccessRights();
 
                 return View(discussion);
             }
@@ -234,6 +232,14 @@ namespace Proiect.Controllers
 
                 return RedirectToAction("Show", "Categories", new { Id = discussion.CategoryId });
             }
+        }
+
+        // Conditii de afisare a butoanelor de editare si stergere
+        [NonAction]
+        private void SetAccessRights()
+        {
+            ViewBag.IsAdmin = User.IsInRole("Admin");
+            ViewBag.CurrentUser = _userManager.GetUserId(User);
         }
     }
 }
