@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Proiect.Data;
 using Proiect.Models;
+using System.Data;
 
 namespace Proiect.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class CategoriesController : Controller
     {
         private readonly ApplicationDbContext db;
@@ -15,6 +18,7 @@ namespace Proiect.Controllers
             db = context;
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
             var categories = db.Categories;
@@ -30,6 +34,7 @@ namespace Proiect.Controllers
             return View();
         }
 
+        [HttpGet]
         public IActionResult Show(int id)
         {
             Category category = db.Categories.Include("Discussions").Where(cat => cat.Id == id).First();
@@ -43,6 +48,7 @@ namespace Proiect.Controllers
             return View(category);
         }
 
+        [HttpGet]
         public IActionResult Edit(int id)
         {
             Category category = db.Categories.Where(cat => cat.Id == id).First();
@@ -71,6 +77,7 @@ namespace Proiect.Controllers
             }
         }
 
+        [HttpGet]
         public IActionResult New()
         {
             Category category = new Category();
@@ -112,6 +119,4 @@ namespace Proiect.Controllers
         }
     }
 }
-
-// TODO: Auth + mesaje validare
 

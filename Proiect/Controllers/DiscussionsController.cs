@@ -22,6 +22,7 @@ namespace Proiect.Controllers
             _roleManager = roleManager;
         }
 
+        // oricine are dreptul sa vada
         // Afisare discutie impreuna cu toate raspunsurile
         [HttpGet]
         public IActionResult Show(int id)
@@ -38,7 +39,7 @@ namespace Proiect.Controllers
                 ViewBag.Alert = TempData["messageType"];
             }
 
-            // TODO: add SetAccessRights() pt butoanele de Edit+Delete
+            // TODO: add SetAccessRights() pt butoanele de Edit+Delete la raspunsuri
 
             return View(discussion);
         }
@@ -67,8 +68,8 @@ namespace Proiect.Controllers
                                         .Where(dis => dis.Id == answer.DiscussionId)
                                         .First();
 
-                // TODO: add SetAccessRights() pt butoanele de Edit+Delete
-                
+                // TODO: add SetAccessRights() pt butoanele de Edit+Delete la raspunsuri
+
                 return View(discussion);
             }
         }
@@ -82,7 +83,7 @@ namespace Proiect.Controllers
                                     .Where(dis => dis.Id == id)
                                     .First();
 
-            // TODO? : Nu e mai usor sa adaugam in model un Category?
+            // TODO: delete? nu pare folosit in view
             ViewBag.CategoryId = categoryId;
 
             // verificam daca discutia ii apartine user-ului care incearca sa editeze /SAU/ daca este admin
@@ -143,6 +144,7 @@ namespace Proiect.Controllers
         {
             Discussion discussion = new Discussion();
 
+            // TODO: delete? nu pare folosit in view
             ViewBag.CategoryId = categoryId;
 
             return View(discussion);
@@ -178,12 +180,9 @@ namespace Proiect.Controllers
         {
             // TODO: ERROR: nu sterge si Answers automat
 
-            Discussion discussion = db.Discussions.Include("Answers")
+            Discussion discussion = db.Discussions.Include("Answers").Include("Category")
                                     .Where(dis => dis.Id == id)
                                     .First();
-
-            // TODO: adauga in model Category + include mai sus
-            int? categoryId = discussion.CategoryId;
 
             // verificam daca discutia ii apartine user-ului care incearca sa editeze /SAU/ daca este admin
             if (discussion.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
@@ -194,14 +193,14 @@ namespace Proiect.Controllers
                 TempData["message"] = "Discussion successfully deleted";
                 TempData["messageType"] = "alert-success";
 
-                return RedirectToAction("Show", "Categories", new { Id = categoryId });
+                return RedirectToAction("Show", "Categories", new { Id = discussion.CategoryId });
             }
             else
             {
                 TempData["message"] = "Discussion successfully deleted";
                 TempData["messageType"] = "alert-danger";
 
-                return RedirectToAction("Show", "Categories", new { Id = categoryId });
+                return RedirectToAction("Show", "Categories", new { Id = discussion.CategoryId });
             }
         }
     }

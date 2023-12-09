@@ -17,12 +17,12 @@ namespace Proiect.Models
 
         public DateTime Date { get; set; }
 
-        // (am implementat ce scrie in continuare) acest required va fi degeaba, putem sa avem butonul de adauga
+        // TODO: (am implementat ce scrie in continuare) acest required va fi degeaba, putem sa avem butonul de adauga
         // discutie in interiorul unei categorii de discutie si atunci implicit se stie categoria
         [Required(ErrorMessage = "Discussion category id is compulsory")]
         public int? CategoryId { get; set; }
 
-        // TODO: public virtual Category? Category { get; set; }
+        public virtual Category? Category { get; set; }
 
         // o discutie are mai multe raspunsuri => ICollection
         public virtual ICollection<Answer>? Answers { get; set; }
