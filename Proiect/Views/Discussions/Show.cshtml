@@ -179,21 +179,22 @@
 
                 @* Afisarea formularului in care se poate adauga un comentariu nou *@
                 <hr style="margin-bottom: 5px; margin-top: 5px;" />
-                <form method="post" action="/Discussions/ShowComment/@answer.Id">
+                <form method="post" action="/Discussions/AddComment/@answer.Id">
                     <input type="hidden" name="AnswerId" value="@answer.Id" />
 
                     <div class="d-flex">
                         <textarea class="form-control" name="Content" rows="1" placeholder="Adauga comentariul tau..." style="border: none;"></textarea>
-                        @Html.ValidationMessage("Content", null, new { @class = "text-danger" })
 
                         <div>
                             <button class="btn btn-success" type="submit">Posteaza</button>
                         </div>
                     </div>
-
-                    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                    @if (ViewBag.CheckComment == answer.Id)
+                    {
+                        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                    }
                 </form>
-                <hr style="margin-bottom: 5px; margin-top: -10px;" />
+                <hr style="margin-bottom: 5px; margin-top: 5px;" />
             </div>
         </div>
     </div>
@@ -203,16 +204,18 @@
 @* Afisarea formularului in care se poate adauga un raspuns nou *@
 <div class="container">
     <h4>Adauga raspunsul tau</h4>
-    <form method="post" action="/Discussions/ShowAnswer/@Model.Id">
+    <form method="post" action="/Discussions/AddAnswer/@Model.Id">
         <input type="hidden" name="DiscussionId" value="@Model.Id" />
 
         <textarea class="form-control" name="Content"></textarea>
-        @Html.ValidationMessage("Content", null, new { @class = "text-danger" })
         <br />
 
         <button class="btn btn-success" type="submit">Posteaza raspunsul tau</button>
 
-        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+        @if (ViewBag.CheckAnswer)
+        {
+            @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+        }
         <br />
     </form>
 </div>

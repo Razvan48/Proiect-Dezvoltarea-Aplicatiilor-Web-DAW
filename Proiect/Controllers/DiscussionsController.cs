@@ -37,6 +37,10 @@ namespace Proiect.Controllers
                 ViewBag.Alert = TempData["messageType"];
             }
 
+            // ignora toate campurile
+            ViewBag.CheckAnswer = false;
+            ViewBag.CheckComment = -1;
+
             SetAccessRights();
 
             return View(discussion);
@@ -45,8 +49,11 @@ namespace Proiect.Controllers
         // Postare raspuns
         [Authorize(Roles = "User,Admin")]
         [HttpPost]
-        public IActionResult ShowAnswer([FromForm] Answer answer)
+        public IActionResult AddAnswer([FromForm] Answer answer)
         {
+            // TODO: trebuie sa avem o functie SHOW pentru toate cele 3 metode
+            // sau la sfarsit facem RedirectToAction
+
             answer.Date = DateTime.Now;
             answer.UserId = _userManager.GetUserId(User);
 
@@ -66,17 +73,24 @@ namespace Proiect.Controllers
                                         .Where(dis => dis.Id == answer.DiscussionId)
                                         .First();
 
+                // ignora campurile de comentarii
+                ViewBag.CheckAnswer = true;
+                ViewBag.CheckComment = -1;
+
                 SetAccessRights();
 
-                return View(discussion);
+                return View("Show", discussion);
             }
         }
 
         // Postare comentariu
         [Authorize(Roles = "User,Admin")]
         [HttpPost]
-        public IActionResult ShowComment([FromForm] Comment comment)
+        public IActionResult AddComment([FromForm] Comment comment)
         {
+            // TODO: trebuie sa avem o functie SHOW pentru toate cele 3 metode
+            // sau la sfarsit facem RedirectToAction
+
             comment.Date = DateTime.Now;
             comment.UserId = _userManager.GetUserId(User);
 
@@ -94,13 +108,20 @@ namespace Proiect.Controllers
             }
             else
             {
+                Answer answer = db.Answers.Find(comment.AnswerId);
+
                 Discussion discussion = db.Discussions.Include("User").Include("Answers").Include("Answers.User").Include("Answers.Comments").Include("Answers.Comments.User")
-                        .Where(dis => dis.Id == comment.Answer.DiscussionId)
+                        .Where(dis => dis.Id == answer.DiscussionId)
                         .First();
+
+                // TODO: am un bug aici
+                // ignora campul de raspuns
+                ViewBag.CheckAnswer = false;
+                ViewBag.CheckComment = comment.AnswerId;
 
                 SetAccessRights();
 
-                return View(discussion);
+                return View("Show", discussion);
             }
         }
 
