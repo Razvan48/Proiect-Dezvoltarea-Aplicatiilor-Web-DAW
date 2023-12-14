@@ -128,14 +128,11 @@ namespace Proiect.Controllers
         // Editare discutie
         [Authorize(Roles = "User,Admin")]
         [HttpGet]
-        public IActionResult Edit(int id, int categoryId)
+        public IActionResult Edit(int id)
         {
             Discussion discussion = db.Discussions
                                     .Where(dis => dis.Id == id)
                                     .First();
-
-            // TODO: delete? nu pare folosit in view
-            ViewBag.CategoryId = categoryId;
 
             // verificam daca discutia ii apartine user-ului care incearca sa editeze /SAU/ daca este admin
             if (discussion.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
@@ -194,9 +191,7 @@ namespace Proiect.Controllers
         public IActionResult New(int categoryId)
         {
             Discussion discussion = new Discussion();
-
-            // TODO: delete? nu pare folosit in view
-            ViewBag.CategoryId = categoryId;
+            discussion.CategoryId = categoryId;
 
             return View(discussion);
         }

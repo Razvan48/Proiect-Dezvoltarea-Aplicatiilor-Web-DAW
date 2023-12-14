@@ -51,7 +51,7 @@
                 @if (Model.UserId == ViewBag.CurrentUser || ViewBag.IsAdmin)
                 {
                     <div class="d-flex justify-content-end align-items-end">
-                        <a class="btn btn-outline-primary" style="border: none; font-size: 15px;" href="/Discussions/Edit?Id=@Model.Id&categoryId=@Model.CategoryId"><i class="bi bi-pencil-square"></i>Editeaza</a>
+                        <a class="btn btn-outline-primary" style="border: none; font-size: 15px;" href="/Discussions/Edit/@Model.Id"><i class="bi bi-pencil-square"></i>Editeaza</a>
                         <div>
                             <form method="post" action="/Discussions/Delete/@Model.Id">
                                 <button class="btn btn-outline-danger" style="border: none; font-size: 15px;" type="submit"><i class="bi bi-trash"></i>Sterge</button>
