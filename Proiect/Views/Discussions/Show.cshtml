@@ -69,10 +69,8 @@
                         <small style="font-size: 12px;">a intrebat pe </small>
                         <small style="font-size: 12px;">@Model.Date</small>
                     </div>
-                    <div class="d-flex">
-                        <div class="d-flex justify-content-center">
-                            <i class="bi bi-question-square h1"></i>
-                        </div>
+                    <div class="d-flex justify-content-center align-items-center">
+                        <i class="bi bi-question-square h1" style="margin: 0px;"></i>
                         <div class="flex-grow-1 d-flex flex-column" style="margin-left: 8px;">
                             <small style="font-size: 13px;">@Model.User.UserName</small>
                             <small style="font-size: 13px;">100 raspunsuri 10 bife</small>
@@ -141,12 +139,10 @@
                             <small style="font-size: 12px;">a raspuns pe </small>
                             <small style="font-size: 12px;">@answer.Date</small>
                         </div>
-                        <div class="d-flex">
-                            <div class="d-flex justify-content-center">
-                                <i class="bi bi-question-square h1"></i>
-                            </div>
+                        <div class="d-flex justify-content-center align-items-center">
+                            <i class="bi bi-question-square h1" style="margin: 0px;"></i>
                             <div class="flex-grow-1 d-flex flex-column" style="margin-left: 8px;">
-                                <small style="font-size: 13px;">@answer.User.UserName</small>
+                                <small style="font-size: 13px;">@Model.User.UserName</small>
                                 <small style="font-size: 13px;">100 raspunsuri 10 bife</small>
                             </div>
                         </div>
@@ -189,10 +185,9 @@
                             <button class="btn btn-success" type="submit">Posteaza</button>
                         </div>
                     </div>
-                    @if (ViewBag.CheckComment == answer.Id)
-                    {
-                        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
-                    }
+
+                    @* TODO: delete *@
+                    @* Html.ValidationSummary(false, "", new { @class = "text-danger" }) *@
                 </form>
                 <hr style="margin-bottom: 5px; margin-top: 5px;" />
             </div>
@@ -212,10 +207,8 @@
 
         <button class="btn btn-success" type="submit">Posteaza raspunsul tau</button>
 
-        @if (ViewBag.CheckAnswer)
-        {
-            @Html.ValidationSummary(false, "", new { @class = "text-danger" })
-        }
+        @* TODO: delete *@
+        @* @Html.ValidationSummary(false, "", new { @class = "text-danger" }) *@
         <br />
     </form>
 </div>

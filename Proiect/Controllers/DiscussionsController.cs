@@ -37,10 +37,6 @@ namespace Proiect.Controllers
                 ViewBag.Alert = TempData["messageType"];
             }
 
-            // ignora toate campurile
-            ViewBag.CheckAnswer = false;
-            ViewBag.CheckComment = -1;
-
             SetAccessRights();
 
             return View(discussion);
@@ -51,8 +47,8 @@ namespace Proiect.Controllers
         [HttpPost]
         public IActionResult AddAnswer([FromForm] Answer answer)
         {
-            // TODO: trebuie sa avem o functie SHOW pentru toate cele 3 metode
-            // sau la sfarsit facem RedirectToAction
+            // TODO: eroarea e scrisa in mesaj
+            // TODO: foloseste @Html.ValidationSummary
 
             answer.Date = DateTime.Now;
             answer.UserId = _userManager.GetUserId(User);
@@ -64,23 +60,14 @@ namespace Proiect.Controllers
 
                 TempData["message"] = "Raspunsul a fost postat";
                 TempData["messageType"] = "alert-success";
-
-                return Redirect("/Discussions/Show/" + answer.DiscussionId);
             }
             else
             {
-                Discussion discussion = db.Discussions.Include("User").Include("Answers").Include("Answers.User").Include("Answers.Comments").Include("Answers.Comments.User")
-                                        .Where(dis => dis.Id == answer.DiscussionId)
-                                        .First();
-
-                // ignora campurile de comentarii
-                ViewBag.CheckAnswer = true;
-                ViewBag.CheckComment = -1;
-
-                SetAccessRights();
-
-                return View("Show", discussion);
+                TempData["message"] = "Raspunsul trebuie sa aiba un continut";
+                TempData["messageType"] = "alert-danger";
             }
+
+            return Redirect("/Discussions/Show/" + answer.DiscussionId);
         }
 
         // Postare comentariu
@@ -88,8 +75,8 @@ namespace Proiect.Controllers
         [HttpPost]
         public IActionResult AddComment([FromForm] Comment comment)
         {
-            // TODO: trebuie sa avem o functie SHOW pentru toate cele 3 metode
-            // sau la sfarsit facem RedirectToAction
+            // TODO: eroarea e scrisa in mesaj
+            // TODO: foloseste @Html.ValidationSummary
 
             comment.Date = DateTime.Now;
             comment.UserId = _userManager.GetUserId(User);
@@ -101,28 +88,16 @@ namespace Proiect.Controllers
 
                 TempData["message"] = "Comentariul a fost postat";
                 TempData["messageType"] = "alert-success";
-
-                Answer answer = db.Answers.Find(comment.AnswerId);
-
-                return Redirect("/Discussions/Show/" + answer.DiscussionId);
             }
             else
             {
-                Answer answer = db.Answers.Find(comment.AnswerId);
 
-                Discussion discussion = db.Discussions.Include("User").Include("Answers").Include("Answers.User").Include("Answers.Comments").Include("Answers.Comments.User")
-                        .Where(dis => dis.Id == answer.DiscussionId)
-                        .First();
-
-                // TODO: am un bug aici
-                // ignora campul de raspuns
-                ViewBag.CheckAnswer = false;
-                ViewBag.CheckComment = comment.AnswerId;
-
-                SetAccessRights();
-
-                return View("Show", discussion);
+                TempData["message"] = "Comentariul trebuie sa aiba un continut";
+                TempData["messageType"] = "alert-danger";
             }
+
+            Answer answer = db.Answers.Find(comment.AnswerId);
+            return Redirect("/Discussions/Show/" + answer.DiscussionId);
         }
 
         // Editare discutie
