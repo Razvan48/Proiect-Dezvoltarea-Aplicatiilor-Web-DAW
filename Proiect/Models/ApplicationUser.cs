@@ -6,11 +6,12 @@ namespace Proiect.Models
     {
         public virtual ICollection<Answer>? Answers { get; set; }
         public virtual ICollection<Comment>? Comments { get; set; }
+        public virtual ICollection<Discussion>? Discussions { get; set; }
 
-        // TODO: atribute suplimentare pentru user
-
-        // TODO: Add
-        // public virtual ICollection<Discussion>? Discussions { get; set; }
+        // atribute suplimentare pentru user
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public string? Image { get; set; }
     }
 }
 

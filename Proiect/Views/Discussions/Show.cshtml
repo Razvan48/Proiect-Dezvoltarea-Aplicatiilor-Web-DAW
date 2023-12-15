@@ -120,7 +120,7 @@
                     {
                         <div class="d-flex align-items-center">
                             <div>
-                                <a class="btn btn-sm btn-outline-primary" style="border: none; font-size: 14px;" href="Answers/Edit/@answer.Id"><i class="bi bi-pencil-square"></i>Editeaza</a>
+                                <a class="btn btn-sm btn-outline-primary" style="border: none; font-size: 14px;" href="/Answers/Edit/@answer.Id"><i class="bi bi-pencil-square"></i>Editeaza</a>
                             </div>
                             <div>
                                 <form method="post" action="/Answers/Delete/@answer.Id">
@@ -164,7 +164,7 @@
                         <div>
                             @if (comment.UserId == ViewBag.CurrentUser || ViewBag.IsAdmin)
                             {
-                                <a class="btn btn-sm btn-outline-primary" style="border: none; display: inline-block;" href="Comments/Edit/@comment.Id"><i class="bi bi-pencil-square"></i></a>
+                                <a class="btn btn-sm btn-outline-primary" style="border: none; display: inline-block;" href="/Comments/Edit/@comment.Id"><i class="bi bi-pencil-square"></i></a>
                                 <form method="post" style="display: inline-block; text-align: right;" action="/Comments/Delete/@comment.Id">
                                     <button class="btn btn-sm btn-outline-danger" style="border: none; align-self: end;" type="submit"><i class="bi bi-trash"></i></button>
                                 </form>

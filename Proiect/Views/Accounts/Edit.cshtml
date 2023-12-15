@@ -1,0 +1,25 @@
+﻿@model Proiect.Models.ApplicationUser
+
+<form enctype="multipart/form-data" asp-controller="Accounts" asp-action="UploadImage">
+	@* TODO: de pus reguli (in model sau aici) pentru atributele de mai jos *@
+
+	@Html.Label("LastName", "Nume")
+	@Html.EditorFor(m => m.LastName, new { htmlAttributes = new { @class = "form-control" } })
+	@Html.ValidationMessageFor(m => m.LastName, null, new { @class = "text-danger" })
+	<br />
+
+	@Html.Label("FirstName", "Prenume")
+	@Html.EditorFor(m => m.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+	@Html.ValidationMessageFor(m => m.FirstName, null, new { @class = "text-danger" })
+	<br />
+
+	@Html.Label("UserImage", "Poza de profil")
+	<input class="form-control" type="file" name="UserImage" />
+	<br />
+
+	<input class="btn btn-success" type="submit" value="Upload" />
+	<br />
+
+	@Html.ValidationSummary(false, "", new { @class = "text-danger" })
+</form>
+

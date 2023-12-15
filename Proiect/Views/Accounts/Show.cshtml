@@ -1,0 +1,50 @@
+﻿@model Proiect.Models.ApplicationUser
+
+<h1>View profile</h1>
+
+@if (Model.Image != null && Model.Image != "")
+{
+	<img src="@Model.Image" alt="User Image">
+}
+else
+{
+	<i class="bi bi-question-square h1" style="margin: 0px;"></i>
+}
+
+<div>Nume: @Model.LastName</div>
+<div>Prenume: @Model.FirstName</div>
+
+@* TODO: are voie administratorul sa editeze profilul altor utilizatori? - NU? *@
+@if (Model.Id == ViewBag.CurrentUser || ViewBag.IsAdmin)
+{
+    <div class="d-flex align-items-center">
+        <div>
+            <a class="btn btn-outline-primary" href="/Accounts/Edit/@Model.Id"><i class="bi bi-pencil-square"></i>Editeaza</a>
+        </div>
+    </div>
+}
+
+<h2>Statistici</h2>
+
+@if (Model.Discussions != null)
+{
+    <div>Intrebari: @Model.Discussions.Count()</div>
+}
+else
+{
+    <div>Intrebari: 0</div>
+}
+
+@if (Model.Discussions != null)
+{
+    <div>Raspunsuri totale: @Model.Answers.Count()</div>
+}
+else
+{
+    <div>Raspunsuri totale: 0</div>
+}
+
+@* TODO *@
+<div>Raspunsuri cu bifa: TODO</div>
+<div>ROL</div>
+
