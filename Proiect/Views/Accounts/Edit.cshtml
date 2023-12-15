@@ -1,6 +1,6 @@
 ﻿@model Proiect.Models.ApplicationUser
 
-<form enctype="multipart/form-data" asp-controller="Accounts" asp-action="UploadImage">
+<form enctype="multipart/form-data" asp-controller="Accounts" asp-action="Edit" asp-route-id="@Model.Id" method="post">
 	@* TODO: de pus reguli (in model sau aici) pentru atributele de mai jos *@
 
 	@Html.Label("LastName", "Nume")

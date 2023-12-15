@@ -52,7 +52,7 @@ namespace Proiect.Controllers
 
         [Authorize(Roles = "User,Admin")]
         [HttpPost]
-        public IActionResult Edit(string id, ApplicationUser requestedUser)
+        public async Task<IActionResult> Edit(string id, ApplicationUser requestedUser, IFormFile UserImage)
         {
             ApplicationUser user = db.Users.Find(id);
 
@@ -60,46 +60,32 @@ namespace Proiect.Controllers
 
             if (ModelState.IsValid)
             {
+                // salveaza poza
+                if (UserImage != null && UserImage.Length > 0)
+                {
+                    var storagePath = Path.Combine(_env.WebRootPath, "images", UserImage.FileName);
+                    var databaseFileName = "/images/" + UserImage.FileName;
+
+                    using (var fileStream = new FileStream(storagePath, FileMode.Create))
+                    {
+                        await UserImage.CopyToAsync(fileStream);
+                    }
+
+                    user.Image = databaseFileName;
+                }
+
                 user.FirstName = requestedUser.FirstName;
                 user.LastName = requestedUser.LastName;
 
                 db.SaveChanges();
                 
-                return Redirect("/Discussions/Show/" + id);
+                return Redirect("/Accounts/Show/" + id);
             }
             else
             {
                 return View(requestedUser);
             }
         }
-
-        // TODO: verifica daca functioneaza
-        //[HttpGet]
-        //public IActionResult UploadImage()
-        //{
-        //    return View();
-        //}
-
-        //[HttpPost]
-        //public async Task<IActionResult> UploadImage(ApplicationUser user, IFormFile UserImage)
-        //{
-        //    if (UserImage.Length > 0)
-        //    {
-        //        var storagePath = Path.Combine(_env.WebRootPath, "images", UserImage.FileName);
-        //        var databaseFileName = "/images/" + UserImage.FileName;
-
-        //        using (var fileStream = new FileStream(storagePath, FileMode.Create))
-        //        {
-        //            await UserImage.CopyToAsync(fileStream);
-        //        }
-
-        //        user.Image = databaseFileName;
-        //        db.Users.Add(user);
-        //        db.SaveChanges();
-        //    }
-
-        //    return View();
-        //}
 
         // Conditii de afisare a butoanelor de editare si stergere
         [NonAction]
