@@ -4,6 +4,14 @@
     ViewData["Title"] = "Categories Show";
 }
 
+<div class="d-flex justify-content-around bg-light rounded-1">
+    <a class="btn btn-primary" href="/Categories/Index/">Back to Categories Index</a>
+</div>
+
+<br />
+<br />
+<br />
+
 <h2>@Model.CategoryName</h2>
 
 <br />
@@ -16,27 +24,32 @@
     <h2 class="@ViewBag.Alert p-3 rounded-3 text-center mb-5">@ViewBag.Message</h2>
 }
 
-<div class="d-flex justify-content-left">
-    <a class="btn btn-primary" href="/Categories/Edit/@Model.Id">Edit Discussion Category</a>
-    <br />
+
+<div class="d-flex justify-content-around bg-light rounded-1">
+    <div class="d-flex justify-content-left">
+        <a class="btn btn-primary" href="/Categories/Edit/@Model.Id">Edit Discussion Category</a>
+    </div>
+
+    <div class="d-flex justify-content-left">
+        <a class="btn btn-primary" href="/Discussions/New?categoryId=@Model.Id">Add New Discussion to this Category</a>
+    </div>
+
+    <div class="d-flex justify-content-left">
+        <form method="post" action="/Categories/Delete/@Model.Id">
+            <button class="btn btn-danger" type="submit">Delete Discussion Category</button>
+        </form>
+    </div>
 </div>
 
-<div class="d-flex justify-content-left">
-    <form method="post" action="/Categories/Delete/@Model.Id">
-        <button class="btn btn-danger" type="submit">Delete Discussion Category</button>
-    </form>
-</div>
-
-<div class="d-flex justify-content-left">
-    <a class="btn btn-primary" href="/Discussions/New?categoryId=@Model.Id">Add New Discussion to this Category</a>
-    <br />
-</div>
+<br />
+<br />
+<br />
 
 @*De adaugat o lista cu discutiile pe aceasta categorie (paginata + posibilitate de a sorta dupa nume / popularitate (numar articole?)*@
 
 @foreach (var discussion in Model.Discussions)
 {
-    <div class="container">
+    <div class="container bg-light rounded-1">
         <div class="row">
             <div class="col-md-2"></div>
             <div class="col-md-8">
@@ -48,11 +61,11 @@
                 <br>
                 <div class="d-flex">
                     <div>
-                        <a class="btn btn-outline-primary" href="/Discussions/Show/@discussion.Id"><i class="bi bi-pencil-square"></i>Show Discussion</a>
+                        <a class="btn btn-outline-info" href="/Discussions/Show/@discussion.Id"><i class="bi bi-pencil-square"></i>Show Discussion</a>
                     </div>
                     @*
                     <div>
-                        <a class="btn btn-outline-primary" href="/Discussions/Edit/@discussion.Id"><i class="bi bi-pencil-square"></i>Edit Discussion</a>
+                        <a class="btn btn-outline-info" href="/Discussions/Edit/@discussion.Id"><i class="bi bi-pencil-square"></i>Edit Discussion</a>
                     </div>
                     <div>
                         <form method="post" action="/Discussions/Delete/@discussion.Id">
@@ -63,6 +76,10 @@
                 </div>
             </div>
             <div class="col-md-2"></div>
+
+            <br />
+            <br />
+            <br />
         </div>
     </div>
 }

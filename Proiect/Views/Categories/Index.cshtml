@@ -8,11 +8,14 @@
     <h2 class="@ViewBag.Alert p-3 rounded-3 text-center mb-5">@ViewBag.Message</h2>
 }
 
-<div class="d-flex justify-content-left">
-    <a class="btn btn-primary" href="/Home/Index">Back to Main Page</a>
-    <br />
-    <a class="btn btn-primary" href="/Categories/New">Add New Discussion Category</a>
-    <br />
+<div class="d-flex justify-content-around bg-light rounded-1">
+    <div class="d-flex justify-content-left">
+            <a class="btn btn-primary" href="/Home/Index">Back to Main Page</a>
+    </div>
+
+    <div>
+        <a class="btn btn-primary" href="/Categories/New">Add New Discussion Category</a>
+    </div>
 </div>
 
 <br />
@@ -21,11 +24,16 @@
 
 @foreach (Proiect.Models.Category category in ViewBag.Categories)
 {
-    <h2>@category.CategoryName</h2>
-    <a class="btn btn-primary" href="/Categories/Show/@category.Id">Show Discussion Category</a>
+    <div class="d-flex justify-content-around bg-light rounded-1">
+        <h2>@category.CategoryName</h2>
 
-    <br />
-    <br />
-    <br />
+        <div>
+            <a class="btn btn-outline-info" href="/Categories/Show/@category.Id"><i class="bi bi-pencil-square"></i>Show Discussion Category</a>
+        </div>
+
+        <br />
+        <br />
+        <br />
+    </div>
 }
 
