@@ -7,6 +7,11 @@ namespace Proiect.Models
         [Key]
         public int Id { get; set; }
 
+        public ICollection<Vote> Votes { get; set; } = new List<Vote>();
+        public int ANumberVotes { get; set; }
+
+        public int userVoted {  get; set; }
+
         [Required(ErrorMessage = "Continutul este obligatoriu")]
         public string Content { get; set; }
 

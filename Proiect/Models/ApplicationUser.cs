@@ -4,6 +4,7 @@ namespace Proiect.Models
 {
     public class ApplicationUser : IdentityUser
     {
+        public ICollection<Vote>? Votes { get; set; }
         public virtual ICollection<Answer>? Answers { get; set; }
         public virtual ICollection<Comment>? Comments { get; set; }
         public virtual ICollection<Discussion>? Discussions { get; set; }

@@ -1,19 +1,53 @@
-﻿@* este necesar title? *@
-@{
+﻿@{
     ViewData["Title"] = "Home Index";
 }
 
-@if (ViewBag.Message != null)
-{
-    <h2 class="alert-success p-3 rounded-3 text-center mb-5">@ViewBag.Message</h2>
+@if (ViewBag.Message != null) {
+    <div class="container mt-3">
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>@ViewBag.Message</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
 }
 
-<h1 class="text-center bg-light">Collective Knowledge</h1>
+<div class="container mt-5">
+    <h1 class="text-center">Collective Knowledge</h1>
 
-<br />
-<br />
-<br />
-
-<div class="d-flex justify-content-around bg-light rounded-1">
-    <a class="btn btn-primary" href="/Categories/Index/">Show Discussion Categories</a>
+    <div class="mt-4 text-center">
+        <a class="btn btn-primary" href="/Categories/Index/">Show Discussion Categories</a>
+    </div>
 </div>
+
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    .container {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin-top: 20px;
+    }
+
+    h1 {
+        color: #0077cc;
+    }
+
+    .btn-primary {
+        background-color: #0077cc;
+        border-color: #0077cc;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+    }
+
+    .alert {
+        border-color: #28a745;
+        color: #28a745;
+    }
+</style>

@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Proiect.Data;
+using Proiect.Data.Migrations;
 using Proiect.Models;
+
 
 namespace Proiect.Controllers
 {
@@ -27,9 +29,20 @@ namespace Proiect.Controllers
         [HttpGet]
         public IActionResult Show(int id)
         {
-            Discussion discussion = db.Discussions.Include("User").Include("Answers").Include("Answers.User").Include("Answers.Comments").Include("Answers.Comments.User")
-                                    .Where(dis => dis.Id == id)
-                                    .First();
+            Discussion discussion = db.Discussions
+                                        .Include("User")
+                                        .Include(d => d.Votes)  // Include discussion votes
+                                        .Include(d => d.Answers)
+                                            .ThenInclude(a => a.User)  // Include answer user
+                                            .ThenInclude(a => a.Votes)  // Include answer votes
+                                        .Include(d => d.Answers)
+                                            .ThenInclude(a => a.Comments)
+                                                .ThenInclude(c => c.User)  // Include comment user
+                                        .Include(d => d.Answers)
+                                            .ThenInclude(a => a.Comments)
+                                                .ThenInclude(c => c.Votes)  // Include comment votes
+                                        .Where(dis => dis.Id == id)
+                                        .FirstOrDefault();
 
             if (TempData.ContainsKey("message"))
             {
@@ -39,7 +52,155 @@ namespace Proiect.Controllers
 
             SetAccessRights();
 
+            //vote count
+            int discussionTotalVotes = db.Votes.Count(vote => vote.DiscussionId == discussion.Id && vote.DidVote == 1) - db.Votes.Count(vote => vote.DiscussionId == discussion.Id && vote.DidVote == 2);
+            discussion.NumberVotes = discussionTotalVotes;
+
+            ApplicationUser currentUser = _userManager.GetUserAsync(User).Result;
+
+            foreach (var answer in discussion.Answers) {
+                int answerTotalVotes = db.Votes.Count(vote => vote.AnswerId == answer.Id && vote.DidVote == 1) - db.Votes.Count(vote => vote.AnswerId == answer.Id && vote.DidVote == 2);
+                answer.ANumberVotes = answerTotalVotes;
+
+                Vote userVote = db.Votes.FirstOrDefault(vote => vote.AnswerId == answer.Id && vote.UserId == currentUser.Id);
+
+                if (userVote != null) {
+                    answer.userVoted = userVote.DidVote;
+                } else {
+                    answer.userVoted = 0; // User hasn't voted for this answer
+                }
+            }
+
+            
+            Vote existingVote = db.Votes.FirstOrDefault(v => v.DiscussionId == id && v.UserId == currentUser.Id);
+
+            if (existingVote != null) {
+                ViewBag.HasVoted = existingVote.DidVote;
+            } else {
+                ViewBag.HasVoted = 0;
+            }
+
+
             return View(discussion);
+        }
+
+        [Authorize(Roles = "User,Admin")]
+        [HttpPost]
+        public IActionResult Upvote(int id) {
+            ApplicationUser currentUser = _userManager.GetUserAsync(User).Result;
+
+            Discussion discussion = db.Discussions.Include("User").Include("Answers").Include("Answers.User").Include("Answers.Comments").Include("Answers.Comments.User")
+                        .Include(d => d.Votes).Where(dis => dis.Id == id)
+                        .First();
+
+            // Check if the user has already voted on this discussion
+            Vote existingVote = db.Votes.FirstOrDefault(v => v.DiscussionId == id && v.UserId == currentUser.Id);
+
+            if (existingVote != null) {
+                // User has already voted, update the existing vote
+                if (existingVote.DidVote == 1) { // we already upvoted, so we remove the vote
+                    db.Votes.Remove(existingVote);
+                    ViewBag.HasVoted = 0;
+                } else {
+                    db.Votes.Remove(existingVote);
+                    Answer associatedAnswer = db.Answers.FirstOrDefault(answer => answer.DiscussionId == id);
+                    Vote newVote = new Vote {
+                        UserId = currentUser.Id,
+                        DiscussionId = id,
+                        AnswerId = null, // Set AnswerId based on the associated Answer
+                        DidVote = 1 // Set to 1 for upvote
+                    };
+                    ViewBag.HasVoted = 1;
+                    db.Votes.Add(newVote);
+                }
+            } else {
+                // Check if the associated answer exists
+                Answer associatedAnswer = db.Answers.FirstOrDefault(answer => answer.DiscussionId == id);
+
+                if (associatedAnswer != null) {
+                    // User hasn't voted yet, create a new vote
+                    Vote newVote = new Vote {
+                        UserId = currentUser.Id,
+                        DiscussionId = id,
+                        AnswerId = null, // Set AnswerId based on the associated Answer
+                        DidVote = 1 // Set to 1 for upvote
+                    };
+                    ViewBag.HasVoted = 1;
+                    db.Votes.Add(newVote);
+                } else {
+                    return BadRequest("No associated answer found.");
+                }
+            }
+
+            db.SaveChanges();
+
+            // Get the updated vote count
+            int discussionTotalVotes = db.Votes.Count(vote => vote.DiscussionId == id && vote.DidVote == 1) - db.Votes.Count(vote => vote.DiscussionId == id && vote.DidVote == 2);
+
+            // Set the updated vote count in ViewBag
+            discussion.NumberVotes = discussionTotalVotes;
+
+            // Redirect to  the discussion page or perform any other desired action
+            return RedirectToAction("Show", new { id = id });
+        }
+
+        [Authorize(Roles = "User,Admin")]
+        [HttpPost]
+        public IActionResult Downvote(int id) {
+            ApplicationUser currentUser = _userManager.GetUserAsync(User).Result;
+
+            Discussion discussion = db.Discussions.Include("User").Include("Answers").Include("Answers.User").Include("Answers.Comments").Include("Answers.Comments.User")
+                       .Include(d => d.Votes).Where(dis => dis.Id == id)
+                       .First();
+            // Check if the user has already voted on this discussion
+            Vote existingVote = db.Votes.FirstOrDefault(v => v.DiscussionId == id && v.UserId == currentUser.Id);
+
+            if (existingVote != null) {
+                // User has already voted, update the existing vote
+                if (existingVote.DidVote == 2) { // we already downvoted, so we remove the vote
+                    db.Votes.Remove(existingVote);
+                    ViewBag.HasVoted = 0;
+                } else {
+                    db.Votes.Remove(existingVote);
+                    Answer associatedAnswer = db.Answers.FirstOrDefault(answer => answer.DiscussionId == id);
+                    Vote newVote = new Vote {
+                        UserId = currentUser.Id,
+                        DiscussionId = id,
+                        AnswerId = null, // Set AnswerId based on the associated Answer
+                        DidVote = 2 // Set to 2 for downvote
+                    };
+                    ViewBag.HasVoted = 2;
+                    db.Votes.Add(newVote);
+                }
+            } else {
+                // Check if the associated answer exists
+                Answer associatedAnswer = db.Answers.FirstOrDefault(answer => answer.DiscussionId == id);
+
+                if (associatedAnswer != null) {
+                    // User hasn't voted yet, create a new vote
+                    Vote newVote = new Vote {
+                        UserId = currentUser.Id,
+                        DiscussionId = id,
+                        AnswerId = null, // Set AnswerId based on the associated Answer
+                        DidVote = 2 // Set to 2 for downvote
+                    };
+                    ViewBag.HasVoted = 2;
+                    db.Votes.Add(newVote);
+                } else {
+                    return BadRequest("No associated answer found.");
+                }
+            }
+
+            db.SaveChanges();
+
+            // Get the updated vote count
+            int discussionTotalVotes = db.Votes.Count(vote => vote.DiscussionId == id && vote.DidVote == 1) - db.Votes.Count(vote => vote.DiscussionId == id && vote.DidVote == 2);
+
+            // Set the updated vote count in ViewBag
+            discussion.NumberVotes = discussionTotalVotes;
+
+            // Redirect to the discussion page or perform any other desired action
+            return RedirectToAction("Show", new { id = id });
         }
 
         // Postare raspuns

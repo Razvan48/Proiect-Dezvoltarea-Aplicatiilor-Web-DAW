@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Proiect.Data;
 
@@ -11,9 +12,10 @@ using Proiect.Data;
 namespace Proiect.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231218210733_127")]
+    partial class _127
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -167,9 +169,6 @@ namespace Proiect.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("ANumberVotes")
-                        .HasColumnType("int");
-
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -180,11 +179,11 @@ namespace Proiect.Data.Migrations
                     b.Property<int?>("DiscussionId")
                         .HasColumnType("int");
 
+                    b.Property<int>("NumberVotes")
+                        .HasColumnType("int");
+
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("userVoted")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -366,7 +365,7 @@ namespace Proiect.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int?>("AnswerId")
+                    b.Property<int>("AnswerId")
                         .HasColumnType("int");
 
                     b.Property<int?>("CommentId")
@@ -375,7 +374,7 @@ namespace Proiect.Data.Migrations
                     b.Property<int>("DidVote")
                         .HasColumnType("int");
 
-                    b.Property<int?>("DiscussionId")
+                    b.Property<int>("DiscussionId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
@@ -498,7 +497,8 @@ namespace Proiect.Data.Migrations
                     b.HasOne("Proiect.Models.Answer", "Answer")
                         .WithMany("Votes")
                         .HasForeignKey("AnswerId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Proiect.Models.Comment", null)
                         .WithMany("Votes")
@@ -507,7 +507,8 @@ namespace Proiect.Data.Migrations
                     b.HasOne("Proiect.Models.Discussion", "Discussion")
                         .WithMany("Votes")
                         .HasForeignKey("DiscussionId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Proiect.Models.ApplicationUser", "User")
                         .WithMany("Votes")

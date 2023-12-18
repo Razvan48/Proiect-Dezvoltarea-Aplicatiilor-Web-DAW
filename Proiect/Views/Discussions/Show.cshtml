@@ -44,9 +44,18 @@
         <div class="col-md-1 d-flex justify-content-center">
             @* TODO: schimba fontul + dimensiunea *@
             <div class="d-inline-flex flex-column">
-                <button type="button" class="btn btn-outline-success"><i class="bi bi-arrow-up-square h2"></i></button>
-                <div style="margin-top: 10px; margin-bottom: 10px;">nr_voturi</div>
-                <button type="button" class="btn btn-outline-danger"><i class="bi bi-arrow-down-circle h2"></i></button>
+                <form method="post" action="/Discussions/Upvote/@Model.Id">
+                    <button type="submit" class="@(ViewBag.HasVoted == 1 ? "btn btn-success" : "btn btn-outline-success")">
+                        <i class="bi bi-arrow-up-square h2"></i>
+                    </button>
+                </form>
+
+                <div style="margin-top: 10px; margin-bottom: 10px;">@Model.NumberVotes</div>
+                <form method="post" action="/Discussions/Downvote/@Model.Id">
+                    <button type="submit" class="@(ViewBag.HasVoted == 2? "btn btn-danger" : "btn btn-outline-danger")">
+                        <i class="bi bi-arrow-down-circle h2"></i>
+                    </button>
+                </form>
             </div>
         </div>
         <div class="col">
@@ -123,9 +132,17 @@
             <div class="col-md-1 d-flex justify-content-center">
                 @* TODO: schimba fontul + dimensiunea *@
                 <div class="d-inline-flex flex-column">
-                    <button type="button" class="btn btn-outline-success"><i class="bi bi-arrow-up-square h2"></i></button>
-                    <div style="margin-top: 10px; margin-bottom: 10px;">nr_voturi</div>
-                    <button type="button" class="btn btn-outline-danger"><i class="bi bi-arrow-down-circle h2"></i></button>
+                    <form method="post" action="/Answers/UpvoteAnswer/@answer.Id">
+                        <button type="submit" class="@(answer.userVoted == 1 ? "btn btn-success" : "btn btn-outline-success")">
+                            <i class="bi bi-arrow-up-square h2"></i>
+                        </button>
+                    </form>
+                    <div style="margin-top: 10px; margin-bottom: 10px;">@answer.ANumberVotes</div>
+                    <form method="post" action="/Answers/DownvoteAnswer/@answer.Id">
+                        <button type="submit" class="@(answer.userVoted == 2? "btn btn-danger" : "btn btn-outline-danger")">
+                            <i class="bi bi-arrow-down-circle h2"></i>
+                        </button>
+                    </form>
                 </div>
                 @* TODO: adaauga bifa *@
             </div>

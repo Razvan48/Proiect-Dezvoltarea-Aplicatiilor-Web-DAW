@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Proiect.Data;
 
@@ -11,9 +12,10 @@ using Proiect.Data;
 namespace Proiect.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231218181307_125")]
+    partial class _125
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -167,9 +169,6 @@ namespace Proiect.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("ANumberVotes")
-                        .HasColumnType("int");
-
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -182,9 +181,6 @@ namespace Proiect.Data.Migrations
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("userVoted")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -304,9 +300,6 @@ namespace Proiect.Data.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("NumberVotes")
-                        .HasColumnType("int");
-
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
@@ -338,9 +331,6 @@ namespace Proiect.Data.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("NumberVotes")
-                        .HasColumnType("int");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -366,16 +356,13 @@ namespace Proiect.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int?>("AnswerId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("CommentId")
+                    b.Property<int>("AnswerId")
                         .HasColumnType("int");
 
                     b.Property<int>("DidVote")
                         .HasColumnType("int");
 
-                    b.Property<int?>("DiscussionId")
+                    b.Property<int>("DiscussionId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
@@ -385,8 +372,6 @@ namespace Proiect.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AnswerId");
-
-                    b.HasIndex("CommentId");
 
                     b.HasIndex("DiscussionId");
 
@@ -496,18 +481,16 @@ namespace Proiect.Data.Migrations
             modelBuilder.Entity("Proiect.Models.Vote", b =>
                 {
                     b.HasOne("Proiect.Models.Answer", "Answer")
-                        .WithMany("Votes")
+                        .WithMany()
                         .HasForeignKey("AnswerId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Proiect.Models.Comment", null)
-                        .WithMany("Votes")
-                        .HasForeignKey("CommentId");
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Proiect.Models.Discussion", "Discussion")
                         .WithMany("Votes")
                         .HasForeignKey("DiscussionId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Proiect.Models.ApplicationUser", "User")
                         .WithMany("Votes")
@@ -525,8 +508,6 @@ namespace Proiect.Data.Migrations
             modelBuilder.Entity("Proiect.Models.Answer", b =>
                 {
                     b.Navigation("Comments");
-
-                    b.Navigation("Votes");
                 });
 
             modelBuilder.Entity("Proiect.Models.ApplicationUser", b =>
@@ -543,11 +524,6 @@ namespace Proiect.Data.Migrations
             modelBuilder.Entity("Proiect.Models.Category", b =>
                 {
                     b.Navigation("Discussions");
-                });
-
-            modelBuilder.Entity("Proiect.Models.Comment", b =>
-                {
-                    b.Navigation("Votes");
                 });
 
             modelBuilder.Entity("Proiect.Models.Discussion", b =>

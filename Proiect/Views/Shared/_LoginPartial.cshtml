@@ -3,28 +3,41 @@
 @inject UserManager<ApplicationUser> UserManager
 
 <ul class="navbar-nav">
-@if (SignInManager.IsSignedIn(User))
-{
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity?.Name!</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="" asp-controller="Accounts" asp-action="Show" asp-route-id="@UserManager.GetUserId(User)">Profile</a>
-    </li>
-    <li class="nav-item">
-        <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
-        </form>
-    </li>
-}
-else
-{
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
-    </li>
-}
+    @if (SignInManager.IsSignedIn(User)) {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity?.Name!</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="" asp-controller="Accounts" asp-action="Show" asp-route-id="@UserManager.GetUserId(User)">Profile</a>
+        </li>
+        <li class="nav-item">
+            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+            </form>
+        </li>
+    } else {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">
+                <button type="button" class="btn btn-primary" style="border-color: #0077cc; background-color: #fff; color: #0077cc;">Log in</button>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white ml-4" asp-area="Identity" asp-page="/Account/Register">
+                <button type="button" class="btn btn-primary" style="background-color: #0077cc; color: #f8f9fa">Sign up</button>
+            </a>
+        </li>
+    }
 </ul>
 
+<style>
+    /* Hover styles for Log in button */
+    a.nav-link.text-dark:hover button.btn-primary {
+        background-color: #0077cc;
+        color: #fff;
+    }
+
+    /* Hover styles for Sign up button */
+    a.nav-link.text-white:hover button.btn-primary {
+        background-color: #0056b3; /* Darker blue on hover */
+    }
+</style>

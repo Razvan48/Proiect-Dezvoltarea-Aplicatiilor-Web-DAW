@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Proiect.Models
 {
@@ -6,6 +7,9 @@ namespace Proiect.Models
     {
         [Key]
         public int Id { get; set; }
+
+        public ICollection<Vote> Votes { get; set; } = new List<Vote>();
+        public int NumberVotes { get; set; }
 
         [Required(ErrorMessage = "Discussion title is compulsory")]
         [StringLength(100, ErrorMessage = "Discussion title too long")]
