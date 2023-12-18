@@ -27,7 +27,7 @@
 
 <div class="d-flex justify-content-around bg-light rounded-1">
 
-    @if (ViewBag.IsEditor || ViewBag.IsAdmin)
+    @if (ViewBag.IsAdmin)
     {
         <div class="d-flex justify-content-left">
             <a class="btn btn-primary" href="/Categories/Edit/@Model.Id">Edit Discussion Category</a>
@@ -38,7 +38,7 @@
         <a class="btn btn-primary" href="/Discussions/New?categoryId=@Model.Id">Add New Discussion to this Category</a>
     </div>
 
-    @if (ViewBag.IsEditor || ViewBag.IsAdmin)
+    @if (ViewBag.IsAdmin)
     {
         <div class="d-flex justify-content-left">
             <form method="post" action="/Categories/Delete/@Model.Id">

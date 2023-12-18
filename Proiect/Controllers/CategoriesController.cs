@@ -129,7 +129,11 @@ namespace Proiect.Controllers
         [HttpPost]
         public ActionResult Delete(int id)
         {
-            Category category = db.Categories.Find(id);
+            //[Problema] Nu sterge automat in cascada.
+            //Nu merge.
+            Category category = db.Categories.Include("Discussions").Include("Answers").Include("Comments")
+                      .Where(cat => cat.Id == id)
+                      .First();
 
             db.Categories.Remove(category);
             db.SaveChanges();
@@ -148,7 +152,6 @@ namespace Proiect.Controllers
         private void SetAccessRights()
         {
             ViewBag.IsAdmin = User.IsInRole("Admin");
-            ViewBag.IsEditor = User.IsInRole("Editor");
             ViewBag.CurrentUser = _userManager.GetUserId(User);
         }
     }
