@@ -57,7 +57,7 @@ namespace Proiect.Controllers
             return View(category);
         }
 
-        [Authorize(Roles = "Editor,Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult Edit(int id)
         {
@@ -68,7 +68,7 @@ namespace Proiect.Controllers
             return View(category);
         }
 
-        [Authorize(Roles = "Editor,Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public IActionResult Edit(int id, Category requestCategory)
         {
@@ -92,7 +92,7 @@ namespace Proiect.Controllers
             }
         }
 
-        [Authorize(Roles = "Editor,Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult New()
         {
@@ -103,7 +103,7 @@ namespace Proiect.Controllers
             return View(category);
         }
 
-        [Authorize(Roles = "Editor,Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public IActionResult New(Category category)
         {
@@ -125,7 +125,7 @@ namespace Proiect.Controllers
             }
         }
 
-        [Authorize(Roles = "Editor,Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public ActionResult Delete(int id)
         {
