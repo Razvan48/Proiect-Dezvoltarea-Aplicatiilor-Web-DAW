@@ -62,22 +62,27 @@ namespace Proiect.Controllers
                 int answerTotalVotes = db.Votes.Count(vote => vote.AnswerId == answer.Id && vote.DidVote == 1) - db.Votes.Count(vote => vote.AnswerId == answer.Id && vote.DidVote == 2);
                 answer.ANumberVotes = answerTotalVotes;
 
-                Vote userVote = db.Votes.FirstOrDefault(vote => vote.AnswerId == answer.Id && vote.UserId == currentUser.Id);
+                if (currentUser != null) {
+                    Vote userVote = db.Votes.FirstOrDefault(vote => vote.AnswerId == answer.Id && vote.UserId == currentUser.Id);
 
-                if (userVote != null) {
-                    answer.userVoted = userVote.DidVote;
-                } else {
-                    answer.userVoted = 0; // User hasn't voted for this answer
+
+                    if (userVote != null) {
+                        answer.userVoted = userVote.DidVote;
+                    } else {
+                        answer.userVoted = 0; // User hasn't voted for this answer
+                    }
                 }
             }
 
-            
-            Vote existingVote = db.Votes.FirstOrDefault(v => v.DiscussionId == id && v.UserId == currentUser.Id);
 
-            if (existingVote != null) {
-                ViewBag.HasVoted = existingVote.DidVote;
-            } else {
-                ViewBag.HasVoted = 0;
+            if (currentUser != null) {
+                Vote existingVote = db.Votes.FirstOrDefault(v => v.DiscussionId == id && v.UserId == currentUser.Id);
+
+                if (existingVote != null) {
+                    ViewBag.HasVoted = existingVote.DidVote;
+                } else {
+                    ViewBag.HasVoted = 0;
+                }
             }
 
 
@@ -87,6 +92,8 @@ namespace Proiect.Controllers
         [Authorize(Roles = "User,Admin")]
         [HttpPost]
         public IActionResult Upvote(int id) {
+
+
             ApplicationUser currentUser = _userManager.GetUserAsync(User).Result;
 
             Discussion discussion = db.Discussions.Include("User").Include("Answers").Include("Answers.User").Include("Answers.Comments").Include("Answers.Comments.User")
