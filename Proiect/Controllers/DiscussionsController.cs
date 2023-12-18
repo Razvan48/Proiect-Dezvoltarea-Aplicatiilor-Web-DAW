@@ -361,7 +361,10 @@ namespace Proiect.Controllers
         public ActionResult Delete(int id)
         {
             // TODO: ERROR: nu sterge si Answers automat
-
+            // [Razvan]: Cred ca trebuie inca un Include("Comments")?
+            //Discussion discussion = db.Discussions.Include("Answers").Include("Category").Include("Comments")
+            //                        .Where(dis => dis.Id == id)
+            //                        .First();
             Discussion discussion = db.Discussions.Include("Answers").Include("Category")
                                     .Where(dis => dis.Id == id)
                                     .First();

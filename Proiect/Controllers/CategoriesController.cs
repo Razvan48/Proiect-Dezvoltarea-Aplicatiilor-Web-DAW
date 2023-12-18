@@ -12,9 +12,15 @@ namespace Proiect.Controllers
     {
         private readonly ApplicationDbContext db;
 
-        public CategoriesController(ApplicationDbContext context)
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        private readonly RoleManager<IdentityRole> _roleManager;
+
+        public CategoriesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             db = context;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         [HttpGet]
@@ -30,6 +36,8 @@ namespace Proiect.Controllers
                 ViewBag.Alert = TempData["messageType"];
             }
 
+            SetAccessRights();
+
             return View();
         }
 
@@ -44,6 +52,8 @@ namespace Proiect.Controllers
                 ViewBag.Alert = TempData["messageType"];
             }
 
+            SetAccessRights();
+
             return View(category);
         }
 
@@ -53,6 +63,8 @@ namespace Proiect.Controllers
         {
             Category category = db.Categories.Where(cat => cat.Id == id).First();
 
+            SetAccessRights();
+
             return View(category);
         }
 
@@ -61,6 +73,8 @@ namespace Proiect.Controllers
         public IActionResult Edit(int id, Category requestCategory)
         {
             Category category = db.Categories.Find(id);
+
+            SetAccessRights();
 
             if (ModelState.IsValid)
             {
@@ -84,6 +98,8 @@ namespace Proiect.Controllers
         {
             Category category = new Category();
 
+            SetAccessRights();
+
             return View(category);
         }
 
@@ -91,6 +107,8 @@ namespace Proiect.Controllers
         [HttpPost]
         public IActionResult New(Category category)
         {
+            SetAccessRights();
+
             if (ModelState.IsValid)
             {
                 db.Categories.Add(category);
@@ -111,7 +129,11 @@ namespace Proiect.Controllers
         [HttpPost]
         public ActionResult Delete(int id)
         {
-            Category category = db.Categories.Find(id);
+            //[Problema] Nu sterge automat in cascada.
+            //Nu merge.
+            Category category = db.Categories.Include("Discussions").Include("Answers").Include("Comments")
+                      .Where(cat => cat.Id == id)
+                      .First();
 
             db.Categories.Remove(category);
             db.SaveChanges();
@@ -119,7 +141,18 @@ namespace Proiect.Controllers
             TempData["message"] = "Discussion Category successfully deleted";
             TempData["messageType"] = "alert-success";
 
+            SetAccessRights();
+
             return RedirectToAction("Index");
+        }
+
+
+        // Conditii de afisare a butoanelor de editare si stergere
+        [NonAction]
+        private void SetAccessRights()
+        {
+            ViewBag.IsAdmin = User.IsInRole("Admin");
+            ViewBag.CurrentUser = _userManager.GetUserId(User);
         }
     }
 }
