@@ -103,7 +103,6 @@ namespace Proiect.Controllers
                     ViewBag.HasVoted = 0;
                 } else {
                     db.Votes.Remove(existingVote);
-                    Answer associatedAnswer = db.Answers.FirstOrDefault(answer => answer.DiscussionId == id);
                     Vote newVote = new Vote {
                         UserId = currentUser.Id,
                         DiscussionId = id,
@@ -114,22 +113,14 @@ namespace Proiect.Controllers
                     db.Votes.Add(newVote);
                 }
             } else {
-                // Check if the associated answer exists
-                Answer associatedAnswer = db.Answers.FirstOrDefault(answer => answer.DiscussionId == id);
-
-                if (associatedAnswer != null) {
-                    // User hasn't voted yet, create a new vote
-                    Vote newVote = new Vote {
-                        UserId = currentUser.Id,
-                        DiscussionId = id,
-                        AnswerId = null, // Set AnswerId based on the associated Answer
-                        DidVote = 1 // Set to 1 for upvote
-                    };
-                    ViewBag.HasVoted = 1;
-                    db.Votes.Add(newVote);
-                } else {
-                    return BadRequest("No associated answer found.");
-                }
+                Vote newVote = new Vote {
+                    UserId = currentUser.Id,
+                    DiscussionId = id,
+                    AnswerId = null, // Set AnswerId based on the associated Answer
+                    DidVote = 1 // Set to 1 for upvote
+                };
+                ViewBag.HasVoted = 1;
+                db.Votes.Add(newVote);
             }
 
             db.SaveChanges();
@@ -162,7 +153,7 @@ namespace Proiect.Controllers
                     ViewBag.HasVoted = 0;
                 } else {
                     db.Votes.Remove(existingVote);
-                    Answer associatedAnswer = db.Answers.FirstOrDefault(answer => answer.DiscussionId == id);
+                    
                     Vote newVote = new Vote {
                         UserId = currentUser.Id,
                         DiscussionId = id,
@@ -174,21 +165,15 @@ namespace Proiect.Controllers
                 }
             } else {
                 // Check if the associated answer exists
-                Answer associatedAnswer = db.Answers.FirstOrDefault(answer => answer.DiscussionId == id);
-
-                if (associatedAnswer != null) {
-                    // User hasn't voted yet, create a new vote
-                    Vote newVote = new Vote {
-                        UserId = currentUser.Id,
-                        DiscussionId = id,
-                        AnswerId = null, // Set AnswerId based on the associated Answer
-                        DidVote = 2 // Set to 2 for downvote
-                    };
-                    ViewBag.HasVoted = 2;
-                    db.Votes.Add(newVote);
-                } else {
-                    return BadRequest("No associated answer found.");
-                }
+                Vote newVote = new Vote {
+                    UserId = currentUser.Id,
+                    DiscussionId = id,
+                    AnswerId = null, // Set AnswerId based on the associated Answer
+                    DidVote = 2 // Set to 2 for downvote
+                };
+                ViewBag.HasVoted = 2;
+                db.Votes.Add(newVote);
+                
             }
 
             db.SaveChanges();
