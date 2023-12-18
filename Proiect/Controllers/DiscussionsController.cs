@@ -230,6 +230,7 @@ namespace Proiect.Controllers
         private void SetAccessRights()
         {
             ViewBag.IsAdmin = User.IsInRole("Admin");
+            ViewBag.IsEditor = User.IsInRole("Editor");
             ViewBag.CurrentUser = _userManager.GetUserId(User);
         }
     }

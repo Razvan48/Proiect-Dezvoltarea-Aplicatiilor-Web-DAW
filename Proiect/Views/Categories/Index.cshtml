@@ -13,9 +13,12 @@
             <a class="btn btn-primary" href="/Home/Index">Back to Main Page</a>
     </div>
 
-    <div>
-        <a class="btn btn-primary" href="/Categories/New">Add New Discussion Category</a>
-    </div>
+    @if (ViewBag.IsEditor || ViewBag.IsAdmin)
+    {
+        <div>
+            <a class="btn btn-primary" href="/Categories/New">Add New Discussion Category</a>
+        </div>
+    }
 </div>
 
 <br />

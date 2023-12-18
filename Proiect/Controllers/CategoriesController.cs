@@ -12,9 +12,15 @@ namespace Proiect.Controllers
     {
         private readonly ApplicationDbContext db;
 
-        public CategoriesController(ApplicationDbContext context)
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        private readonly RoleManager<IdentityRole> _roleManager;
+
+        public CategoriesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             db = context;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         [HttpGet]
@@ -30,6 +36,8 @@ namespace Proiect.Controllers
                 ViewBag.Alert = TempData["messageType"];
             }
 
+            SetAccessRights();
+
             return View();
         }
 
@@ -44,23 +52,29 @@ namespace Proiect.Controllers
                 ViewBag.Alert = TempData["messageType"];
             }
 
+            SetAccessRights();
+
             return View(category);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Editor,Admin")]
         [HttpGet]
         public IActionResult Edit(int id)
         {
             Category category = db.Categories.Where(cat => cat.Id == id).First();
 
+            SetAccessRights();
+
             return View(category);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Editor,Admin")]
         [HttpPost]
         public IActionResult Edit(int id, Category requestCategory)
         {
             Category category = db.Categories.Find(id);
+
+            SetAccessRights();
 
             if (ModelState.IsValid)
             {
@@ -78,19 +92,23 @@ namespace Proiect.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Editor,Admin")]
         [HttpGet]
         public IActionResult New()
         {
             Category category = new Category();
 
+            SetAccessRights();
+
             return View(category);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Editor,Admin")]
         [HttpPost]
         public IActionResult New(Category category)
         {
+            SetAccessRights();
+
             if (ModelState.IsValid)
             {
                 db.Categories.Add(category);
@@ -107,7 +125,7 @@ namespace Proiect.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Editor,Admin")]
         [HttpPost]
         public ActionResult Delete(int id)
         {
@@ -119,7 +137,19 @@ namespace Proiect.Controllers
             TempData["message"] = "Discussion Category successfully deleted";
             TempData["messageType"] = "alert-success";
 
+            SetAccessRights();
+
             return RedirectToAction("Index");
+        }
+
+
+        // Conditii de afisare a butoanelor de editare si stergere
+        [NonAction]
+        private void SetAccessRights()
+        {
+            ViewBag.IsAdmin = User.IsInRole("Admin");
+            ViewBag.IsEditor = User.IsInRole("Editor");
+            ViewBag.CurrentUser = _userManager.GetUserId(User);
         }
     }
 }
