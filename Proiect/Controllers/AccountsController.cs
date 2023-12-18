@@ -32,7 +32,7 @@ namespace Proiect.Controllers
         [HttpGet]
         public IActionResult Show(string id)
         {
-            ApplicationUser user = db.Users.Include("Discussions").Include("Answers")
+            ApplicationUser user = db.Users.Include("Discussions").Include("Answers").Include("Comments")
                                    .Where(u =>  u.Id == id)
                                    .First();
 
