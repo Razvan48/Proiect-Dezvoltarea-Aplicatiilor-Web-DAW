@@ -1,40 +1,7 @@
 ﻿@model Proiect.Models.ApplicationUser
 
-<h1>View profile</h1>
-
-@* TODO: are voie administratorul sa editeze profilul altor utilizatori? - NU? *@
-@if (Model.Id == ViewBag.CurrentUser || ViewBag.IsAdmin)
-{
-    <div class="d-flex align-items-center">
-        <div>
-            <a class="btn btn-outline-primary" href="/Accounts/Edit/@Model.Id"><i class="bi bi-pencil-square"></i>Editeaza</a>
-        </div>
-    </div>
-}
-
-<h2>Statistici</h2>
-
-@if (Model.Discussions != null)
-{
-    <div>Intrebari: @Model.Discussions.Count()</div>
-}
-else
-{
-    <div>Intrebari: 0</div>
-}
-
-@if (Model.Discussions != null)
-{
-    <div>Raspunsuri totale: @Model.Answers.Count()</div>
-}
-else
-{
-    <div>Raspunsuri totale: 0</div>
-}
-
-@* TODO *@
-<div>Raspunsuri cu bifa: TODO</div>
-<div>ROL</div>
+<h1>View profile - @Model.Email</h1>
+<br />
 
 <div class="container">
     <div class="d-flex flex-column">
@@ -53,28 +20,79 @@ else
                 <div>Nume: @Model.LastName</div>
                 <div>Prenume: @Model.FirstName</div>
                 <div>Data inregistrare: </div>
+                <div>ROL</div>  @* TODO *@
+
+                @* TODO: are voie administratorul sa editeze profilul altor utilizatori? *@
+                @if (Model.Id == ViewBag.CurrentUser || ViewBag.IsAdmin)
+                {
+                    <div>
+                        <a class="btn btn-outline-primary" href="/Accounts/Edit/@Model.Id"><i class="bi bi-pencil-square"></i>Editeaza</a>
+                    </div>
+                }
             </div>
         </div>
-        <div>Statistici</div>
+        <br />
+
+        <h4>Statistici</h4>
         <div class="card border-dark mb-3">
             <div class="card-body d-flex justify-content-between">
-                <div class="d-flex flex-column">    @* TODO: justify content center *@
+                <div class="d-flex flex-column align-items-center">
                     <div>Discutii</div>
-                    <div>nr_dis</div>
+                    <div style="font-size: 30px;">
+                        @if (Model.Discussions != null)
+                        {
+                            <div>@Model.Discussions.Count() <i class="bi bi-patch-question-fill"></i></div>
+                        }
+                        else
+                        {
+                            <div>0 <i class="bi bi-patch-question-fill"></i></div>
+                        }
+                    </div>
                 </div>
-                <div class="d-flex flex-column">    @* TODO: justify content center *@
+                <div class="d-flex flex-column align-items-center">
                     <div>Raspunsuri</div>
-                    <div>nr_ans</div>
+                    <div style="font-size: 30px;">
+                        @if (Model.Discussions != null)
+                        {
+                            <div>@Model.Answers.Count() <i class="bi bi-chat-fill"></i></div>
+                        }
+                        else
+                        {
+                            <div>0 <i class="bi bi-chat-fill"></i></div>
+                        }
+                    </div>
                 </div>
-                <div class="d-flex flex-column">    @* TODO: justify content center *@
+                <div class="d-flex flex-column align-items-center">
+                    @* TODO *@
+                    <div>Up votes</div>
+                    <div style="font-size: 30px;">0 <i class="bi bi-arrow-up-circle-fill"></i></div>
+                </div>
+                <div class="d-flex flex-column align-items-center">
+                    @* TODO *@
+                    <div>Bife</div>
+                    <div style="font-size: 30px;">0 <i class="bi bi-award-fill"></i></div>
+                </div>
+                <div class="d-flex flex-column align-items-center">
                     <div>Comentarii</div>
-                    <div>nr_comm</div>
+                    <div style="font-size: 30px;">
+                        @if (Model.Comments != null)
+                        {
+                            <div>@Model.Comments.Count() <i class="bi bi-chat-text-fill"></i></div>
+                        }
+                        else
+                        {
+                            <div>0 <i class="bi bi-chat-text-fill"></i></div>
+                        }
+                    </div>
                 </div>
             </div>
         </div>
+        <br />
+
         <div>About Section</div>
-        <div>Top posts</div>
-        <div>3 categorii: All, Discussions, Answers, Comments</div>
+        <br />
+
+        <div>Top posts cu 3 categorii: All, Discussions, Answers, Comments</div>
     </div>
 </div>
 
