@@ -129,9 +129,7 @@ namespace Proiect.Controllers
         [HttpPost]
         public ActionResult Delete(int id)
         {
-            //[Problema] Nu sterge automat in cascada.
-            //Nu merge.
-            Category category = db.Categories.Include("Discussions").Include("Answers").Include("Comments")
+            Category category = db.Categories.Include("Discussions").Include("Discussions.Answers").Include("Discussions.Answers.Comments")
                       .Where(cat => cat.Id == id)
                       .First();
 
