@@ -352,9 +352,13 @@ namespace Proiect.Controllers
         [HttpPost]
         public ActionResult Delete(int id)
         {
-            Discussion discussion = db.Discussions.Include("Answers").Include("Category").Include("Answers.Comments")
+            /*Discussion discussion = db.Discussions.Include("Answers").Include("Category").Include("Answers.Comments")
                                     .Where(dis => dis.Id == id)
-                                    .First();
+                                    .First();*/
+
+            Discussion discussion = db.Discussions.Include("Answers").Include("Answers.Comments")
+                        .Where(dis => dis.Id == id)
+                        .First();
 
             // verificam daca discutia ii apartine user-ului care incearca sa editeze /SAU/ daca este admin
             if (discussion.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
