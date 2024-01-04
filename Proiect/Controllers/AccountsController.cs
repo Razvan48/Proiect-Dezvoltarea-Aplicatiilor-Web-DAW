@@ -30,13 +30,16 @@ namespace Proiect.Controllers
 
         // oricine poate sa vada profilul unui utilizator
         [HttpGet]
-        public IActionResult Show(string id)
+        public async Task<ActionResult> Show(string id)
         {
             ApplicationUser user = db.Users.Include("Discussions").Include("Answers").Include("Comments")
                                    .Where(u =>  u.Id == id)
                                    .First();
 
             SetAccessRights();
+
+            var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
+            ViewBag.Role = role;
 
             return View(user);
         }

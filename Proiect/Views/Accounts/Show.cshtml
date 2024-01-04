@@ -17,10 +17,13 @@
                 }
             </div>
             <div style="margin-left: 20px;">
-                <div>Nume: @Model.LastName</div>
-                <div>Prenume: @Model.FirstName</div>
-                <div>Data inregistrare: @Model.Date</div>
-                <div>ROL</div>  @* TODO *@
+                <div><i class="bi bi-person-lines-fill"></i> Nume: @Model.LastName</div>
+                <div><i class="bi bi-person-lines-fill"></i> Prenume: @Model.FirstName</div>
+                <div><i class="bi bi-calendar4-week"></i> Data inregistrare: @Model.Date</div>
+                <div style="margin-top: 10px; margin-bottom: 10px;">
+                    <i class="bi bi-person"></i> Rol utilizator
+                    <span class="rounded-pill bg-secondary mr-2 px-4 py-2 text-white">@ViewBag.Role</span>
+                </div>
 
                 @* TODO: are voie administratorul sa editeze profilul altor utilizatori? *@
                 @if (Model.Id == ViewBag.CurrentUser || ViewBag.IsAdmin)
