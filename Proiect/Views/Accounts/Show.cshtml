@@ -19,7 +19,7 @@
             <div style="margin-left: 20px;">
                 <div>Nume: @Model.LastName</div>
                 <div>Prenume: @Model.FirstName</div>
-                <div>Data inregistrare: </div>
+                <div>Data inregistrare: @Model.Date</div>
                 <div>ROL</div>  @* TODO *@
 
                 @* TODO: are voie administratorul sa editeze profilul altor utilizatori? *@
@@ -89,7 +89,11 @@
         </div>
         <br />
 
-        <div>About Section</div>
+        <div class="card">
+            <h3>About Me Section</h3>
+            <div>@Model.AboutMe</div>
+        </div>
+        
         <br />
 
         <div>Top posts cu 3 categorii: All, Discussions, Answers, Comments</div>

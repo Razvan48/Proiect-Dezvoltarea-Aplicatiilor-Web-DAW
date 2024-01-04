@@ -13,6 +13,17 @@ namespace Proiect.Models
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public string? Image { get; set; }
+        public string? AboutMe { get; set; }
+        public DateTime Date { get; set; }
+
+        public ApplicationUser()
+        {
+            FirstName = "-";
+            LastName = "-";
+            Image = "/images/intrebare.png";
+            AboutMe = "-";
+            Date = DateTime.Now;
+        }
     }
 }
 
