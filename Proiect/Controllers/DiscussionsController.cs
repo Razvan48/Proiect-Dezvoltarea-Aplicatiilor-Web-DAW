@@ -55,6 +55,11 @@ namespace Proiect.Controllers
                 ViewBag.EditAnswerID = (int)TempData["EditAnswerID"];
             }
 
+            if (TempData.ContainsKey("EditCommentID"))
+            {
+                ViewBag.EditCommentID = (int)TempData["EditCommentID"];
+            }
+
             SetAccessRights();
 
             //vote count

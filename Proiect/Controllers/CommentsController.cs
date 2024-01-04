@@ -49,10 +49,68 @@ namespace Proiect.Controllers
 
             return Redirect("/Discussions/Show/" + comment.Answer.DiscussionId);
         }
-
-        // TODO: editare directa din Discussions/Show/Id?
+        
         // TODO: Edit
         // TODO: POST Edit
+
+        [Authorize(Roles = "User,Editor,Admin")]
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            Comment comment = db.Comments.Include("Answer")
+                              .Where(c => c.Id == id)
+                              .First();
+
+            if (comment.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
+            {
+                TempData["EditCommentID"] = id;
+                return Redirect("/Discussions/Show/" + comment.Answer.DiscussionId);
+            }
+            else
+            {
+                TempData["message"] = "Nu aveti dreptul sa editati un comentariu care nu va apartine"; ;
+                TempData["messageType"] = "alert-success";
+
+                return Redirect("/Discussions/Show/" + comment.Answer.DiscussionId);
+            }
+        }
+
+        [Authorize(Roles = "User,Admin")]
+        [HttpPost]
+        public IActionResult Edit(int id, Comment requestComment)
+        {
+            Comment comment = db.Comments.Include("Answer")
+                              .Where(c => c.Id == id)
+                              .First();
+
+            if (comment.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
+            {
+                if (ModelState.IsValid)
+                {
+                    comment.Content = requestComment.Content;
+                    db.SaveChanges();
+
+                    TempData["message"] = "Comentariul a fost editat";
+                    TempData["messageType"] = "alert-success";
+
+                    return Redirect("/Discussions/Show/" + comment.Answer.DiscussionId);
+                }
+                else
+                {
+                    TempData["message"] = "Continutul raspunsului nu poate fi null"; ;
+                    TempData["messageType"] = "alert-danger";
+
+                    return Redirect("/Comments/Edit/" + comment.Id);
+                }
+            }
+            else
+            {
+                TempData["message"] = "Nu aveti dreptul sa editati un comentariu care nu va apartine";
+                TempData["messageType"] = "alert-danger";
+
+                return Redirect("/Discussions/Show/" + comment.Answer.DiscussionId);
+            }
+        }
     }
 }
 
