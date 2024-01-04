@@ -174,13 +174,60 @@ namespace Proiect.Controllers
             return Redirect("/Discussions/Show/" + answer.DiscussionId);
         }
 
+        [Authorize(Roles = "User,Editor,Admin")]
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            Answer answer = db.Answers.Find(id);
 
-        // TODO: editare directa din Discussions/Show/Id?
-        // TODO: Edit
-        // TODO: POST Edit
+            if (answer.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
+            {
+                TempData["EditAnswerID"] = id;
+                return Redirect("/Discussions/Show/" + answer.DiscussionId);
+            }
+            else
+            {
+                TempData["message"] = "Nu aveti dreptul sa editati un raspuns care nu va apartine"; ;
+                TempData["messageType"] = "alert-success";
+
+                return Redirect("/Discussions/Show/" + answer.DiscussionId);
+            }
+        }
+
+        [Authorize(Roles = "User,Admin")]
+        [HttpPost]
+        public IActionResult Edit(int id, Answer requestAnswer)
+        {
+            Answer answer = db.Answers.Find(id);
+
+            if (answer.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
+            {
+                if (ModelState.IsValid)
+                {
+                    answer.Content = requestAnswer.Content;
+                    db.SaveChanges();
+
+                    TempData["message"] = "Raspunsul a fost editat";
+                    TempData["messageType"] = "alert-success";
+
+                    return Redirect("/Discussions/Show/" + answer.DiscussionId);
+                }
+                else
+                {
+                    TempData["message"] = "Continutul raspunsului nu poate fi null"; ;
+                    TempData["messageType"] = "alert-danger";
+
+                    return Redirect("/Answers/Edit/" + answer.Id);
+                }
+            }
+            else
+            {
+                TempData["message"] = "Nu aveti dreptul sa editati un raspuns care nu va apartine";
+                TempData["messageType"] = "alert-danger";
+
+                return Redirect("/Discussions/Show/" + answer.DiscussionId);
+            }
+        }
     }
-
-
-
 }
 

@@ -50,6 +50,11 @@ namespace Proiect.Controllers
                 ViewBag.Alert = TempData["messageType"];
             }
 
+            if (TempData.ContainsKey("EditAnswerID"))
+            {
+                ViewBag.EditAnswerID = (int)TempData["EditAnswerID"];
+            }
+
             SetAccessRights();
 
             //vote count
