@@ -38,12 +38,12 @@ namespace Proiect.Controllers
                 db.Comments.Remove(comment);
                 db.SaveChanges();
 
-                TempData["message"] = "Comment successfully deleted";
+                TempData["message"] = "Comentariul a fost sters";
                 TempData["messageType"] = "alert-success";
             }
             else
             {
-                TempData["message"] = "Comment successfully deleted";
+                TempData["message"] = "Nu puteti sa stergeti comentariul altor utilizatori";
                 TempData["messageType"] = "alert-danger";
             }
 

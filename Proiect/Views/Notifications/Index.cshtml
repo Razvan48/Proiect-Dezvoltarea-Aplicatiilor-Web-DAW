@@ -1,0 +1,61 @@
+﻿@{
+    ViewData["Title"] = "Inbox";
+}
+
+@* Afisarea mesajului de validare *@
+@if (ViewBag.Message != null)
+{
+    <h2 class="@ViewBag.Alert p-3 rounded-3 text-center mb-5">@ViewBag.Message</h2>
+}
+
+<div class="d-flex flex-column">
+    <div class="d-flex container justify-content-center">
+        <h1>INBOX</h1>
+    </div>
+    <div class="container">
+        @foreach (var notification in ViewBag.Notifications)
+        {
+            @if (notification.Read)
+            {
+                ViewData["Read"] = "lighter";
+            }
+            else
+            {
+                ViewData["Read"] = "bold";
+            }
+
+            <a href="/Notifications/MarkAsRead/@notification.Id" class="border p-3 d-flex custom-border align-items-center" style="font-weight: @ViewData["Read"];">
+                <div class="d-flex flex-column align-items-center">
+                    <div>@notification.DateMonth</div>
+                    <div>@notification.DateDay</div>
+                </div>
+
+                @if (notification.NewAnswer)
+                {
+                    <div style="margin-left: 20px;">
+                        Un nou raspuns la intrebarea ta
+                    </div>
+                }
+                else if (notification.NewComment)
+                {
+                    <div style="margin-left: 20px;">
+                        Un nou comentariu la raspunsul tau
+                    </div>
+                }
+                else if (notification.NewBestAnswer)
+                {
+                    <div style="margin-left: 20px;">
+                        Raspunsul tau a fost selectat ca fiind cel mai bun
+                    </div>
+                }
+
+                <div style="margin-left: auto;">
+                    <form method="post" action="/Notifications/Delete/@notification.Id">
+                        <button class="btn btn-outline-danger h1" type="submit"><i class="bi bi-trash"></i></button>
+                    </form>
+                </div>
+            </a>
+        }
+    </div>
+</div>
+

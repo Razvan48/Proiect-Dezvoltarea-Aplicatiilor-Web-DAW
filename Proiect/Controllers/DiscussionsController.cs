@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Proiect.Data;
 using Proiect.Data.Migrations;
 using Proiect.Models;
-
+using System.Globalization;
 
 namespace Proiect.Controllers
 {
@@ -221,6 +221,23 @@ namespace Proiect.Controllers
                 db.Answers.Add(answer);
                 db.SaveChanges();
 
+                Discussion discussion = db.Discussions.Find(answer.DiscussionId);
+
+                Notification NewNotification = new Notification
+                {
+                    Read = false,
+                    DateMonth = DateTime.Now.ToString("MMMM", CultureInfo.InvariantCulture),
+                    DateDay = DateTime.Now.Day,
+                    UserId = discussion.UserId,
+                    DiscussionId = answer.DiscussionId,
+                    NewAnswer = true,
+                    NewComment = false,
+                    NewBestAnswer = false
+                };
+
+                db.Notifications.Add(NewNotification);
+                db.SaveChanges();
+
                 TempData["message"] = "Raspunsul a fost postat";
                 TempData["messageType"] = "alert-success";
             }
@@ -244,9 +261,26 @@ namespace Proiect.Controllers
             comment.Date = DateTime.Now;
             comment.UserId = _userManager.GetUserId(User);
 
+            Answer answer = db.Answers.Find(comment.AnswerId);
+
             if (ModelState.IsValid)
             {
                 db.Comments.Add(comment);
+                db.SaveChanges();
+
+                Notification NewNotification = new Notification
+                {
+                    Read = false,
+                    DateMonth = DateTime.Now.ToString("MMMM", CultureInfo.InvariantCulture),
+                    DateDay = DateTime.Now.Day,
+                    UserId = answer.UserId,
+                    DiscussionId = answer.DiscussionId,
+                    NewAnswer = false,
+                    NewComment = true,
+                    NewBestAnswer = false
+                };
+
+                db.Notifications.Add(NewNotification);
                 db.SaveChanges();
 
                 TempData["message"] = "Comentariul a fost postat";
@@ -259,7 +293,6 @@ namespace Proiect.Controllers
                 TempData["messageType"] = "alert-danger";
             }
 
-            Answer answer = db.Answers.Find(comment.AnswerId);
             return Redirect("/Discussions/Show/" + answer.DiscussionId);
         }
 

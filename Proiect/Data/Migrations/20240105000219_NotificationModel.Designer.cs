@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Proiect.Data;
 
@@ -11,9 +12,10 @@ using Proiect.Data;
 namespace Proiect.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240105000219_NotificationModel")]
+    partial class NotificationModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -372,31 +374,29 @@ namespace Proiect.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int?>("DateDay")
+                    b.Property<int?>("AnswerId")
                         .HasColumnType("int");
 
-                    b.Property<string>("DateMonth")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("CommentId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
 
                     b.Property<int?>("DiscussionId")
                         .HasColumnType("int");
 
-                    b.Property<bool?>("NewAnswer")
-                        .HasColumnType("bit");
-
-                    b.Property<bool?>("NewBestAnswer")
-                        .HasColumnType("bit");
-
-                    b.Property<bool?>("NewComment")
-                        .HasColumnType("bit");
-
-                    b.Property<bool?>("Read")
+                    b.Property<bool>("Read")
                         .HasColumnType("bit");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AnswerId");
+
+                    b.HasIndex("CommentId");
 
                     b.HasIndex("DiscussionId");
 
@@ -542,6 +542,14 @@ namespace Proiect.Data.Migrations
 
             modelBuilder.Entity("Proiect.Models.Notification", b =>
                 {
+                    b.HasOne("Proiect.Models.Answer", "Answer")
+                        .WithMany()
+                        .HasForeignKey("AnswerId");
+
+                    b.HasOne("Proiect.Models.Comment", "Comment")
+                        .WithMany()
+                        .HasForeignKey("CommentId");
+
                     b.HasOne("Proiect.Models.Discussion", "Discussion")
                         .WithMany()
                         .HasForeignKey("DiscussionId");
@@ -549,6 +557,10 @@ namespace Proiect.Data.Migrations
                     b.HasOne("Proiect.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
+
+                    b.Navigation("Answer");
+
+                    b.Navigation("Comment");
 
                     b.Navigation("Discussion");
 

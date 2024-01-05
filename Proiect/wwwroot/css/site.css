@@ -16,3 +16,16 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.custom-border:hover {
+    background-color: #e0e0e0;
+    cursor: pointer;
+}
+
+.custom-border,
+.custom-border:hover,
+.custom-border:visited {
+    text-decoration: none;
+    color: inherit;
+}
+

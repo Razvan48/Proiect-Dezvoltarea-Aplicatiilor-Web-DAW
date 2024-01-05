@@ -40,12 +40,12 @@ namespace Proiect.Controllers
                 db.Answers.Remove(answer);
                 db.SaveChanges();
 
-                TempData["message"] = "Answer successfully deleted";
+                TempData["message"] = "Raspunsul a fost sters";
                 TempData["messageType"] = "alert-success";
             }
             else
             {
-                TempData["message"] = "Answer successfully deleted";
+                TempData["message"] = "Nu puteti sa stergeti raspunsul altor utilizatori";
                 TempData["messageType"] = "alert-danger";
             }
 
