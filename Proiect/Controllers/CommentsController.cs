@@ -83,11 +83,14 @@ namespace Proiect.Controllers
                               .Where(c => c.Id == id)
                               .First();
 
+            requestComment.Date = DateTime.Now;
+
             if (comment.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
             {
                 if (ModelState.IsValid)
                 {
                     comment.Content = requestComment.Content;
+                    comment.Date = requestComment.Date;
                     db.SaveChanges();
 
                     TempData["message"] = "Comentariul a fost editat";

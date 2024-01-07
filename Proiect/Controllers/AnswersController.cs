@@ -29,11 +29,17 @@ namespace Proiect.Controllers
         [HttpPost]
         public IActionResult Delete(int id)
         {
-            // TODO: nu sterge in cascada si comentariile
-
             Answer answer = db.Answers.Include("Comments")
                             .Where(ans => ans.Id == id)
                             .First();
+
+            // sterge manual toate comentariile de la acest raspuns
+            foreach (Comment comment in answer.Comments)
+            {
+                db.Comments.Remove(comment);
+            }
+
+            db.SaveChanges();
 
             // verificam daca discutia ii apartine user-ului care incearca sa editeze /SAU/ daca este admin
             if (answer.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
@@ -203,14 +209,16 @@ namespace Proiect.Controllers
 
             Answer answer = db.Answers.Find(id);
 
+            requestAnswer.Date = DateTime.Now;
+
             if (answer.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
             {
                 if (ModelState.IsValid)
                 {
+                    answer.Date = requestAnswer.Date;
                     requestAnswer.Content = sanitizer.Sanitize(requestAnswer.Content);
                     answer.Content = requestAnswer.Content;
 
-                    answer.Content = requestAnswer.Content;
                     db.SaveChanges();
 
                     TempData["message"] = "Raspunsul a fost editat";

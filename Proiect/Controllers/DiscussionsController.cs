@@ -258,9 +258,6 @@ namespace Proiect.Controllers
         [HttpPost]
         public IActionResult AddComment([FromForm] Comment comment)
         {
-            // TODO: eroarea e scrisa in mesaj
-            // TODO: foloseste @Html.ValidationSummary
-
             comment.Date = DateTime.Now;
             comment.UserId = _userManager.GetUserId(User);
 
@@ -339,6 +336,7 @@ namespace Proiect.Controllers
                 if (discussion.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
                 {
                     discussion.Title = requestDiscussion.Title;
+                    discussion.Date = requestDiscussion.Date;
                     requestDiscussion.Content = sanitizer.Sanitize(requestDiscussion.Content);
                     discussion.Content = requestDiscussion.Content;
                     db.SaveChanges();
@@ -413,6 +411,31 @@ namespace Proiect.Controllers
             Discussion discussion = db.Discussions.Include("Answers").Include("Answers.Comments")
                         .Where(dis => dis.Id == id)
                         .First();
+
+            // sterge manual raspunsurile + comentariile de la aceasta discutie
+            foreach (Answer answer in discussion.Answers)
+            {
+                foreach (Comment comment in answer.Comments)
+                {
+                    db.Remove(comment);
+                }
+
+                db.Remove(answer);
+            }
+
+            db.SaveChanges();
+
+            // sterge notificarile care aveau legatura cu aceasta discutie
+            List<Notification> notifications = db.Notifications
+                                               .Where(not => not.DiscussionId == discussion.Id)
+                                               .ToList();
+
+            foreach (Notification notification in notifications)
+            {
+                db.Notifications.Remove(notification);
+            }
+
+            db.SaveChanges();
 
             // verificam daca discutia ii apartine user-ului care incearca sa editeze /SAU/ daca este admin
             if (discussion.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))

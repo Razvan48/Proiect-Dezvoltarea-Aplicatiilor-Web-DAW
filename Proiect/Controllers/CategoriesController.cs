@@ -157,6 +157,35 @@ namespace Proiect.Controllers
                       .Where(cat => cat.Id == id)
                       .First();
 
+            // sterge manual discutiile + notificarile + raspunsurile + comentariile din aceasta categorie
+            foreach (Discussion discussion in category.Discussions)
+            {
+                foreach (Answer answer in discussion.Answers)
+                {
+                    foreach (Comment comment in answer.Comments)
+                    {
+                        db.Comments.Remove(comment);
+                    }
+
+                    db.Answers.Remove(answer);
+                }
+
+                // sterge notificarile care aveau legatura cu aceasta discutie
+                List<Notification> notifications = db.Notifications
+                                                   .Where(not => not.DiscussionId == discussion.Id)
+                                                   .ToList();
+
+                foreach (Notification notification in notifications)
+                {
+                    db.Notifications.Remove(notification);
+                }
+
+                db.Discussions.Remove(discussion); 
+            }
+            
+            db.SaveChanges();
+
+            // sterge categoria
             db.Categories.Remove(category);
             db.SaveChanges();
 
