@@ -56,8 +56,16 @@ namespace Proiect.Controllers
             SetAccessRights();
 
             //paginare
-
             var discussions = db.Discussions.Where(dis => dis.CategoryId == id);
+            var sortType = Convert.ToInt32(HttpContext.Request.Query["sortType"]);
+            if (sortType == 1)
+            {
+                discussions = db.Discussions.Where(dis => dis.CategoryId == id).OrderBy(dis => dis.Title);
+            }
+            else if (sortType == 2)
+            {
+
+            }
             int _perPage = 3;
             int totalItems = discussions.Count();
             var currentPage = Convert.ToInt32(HttpContext.Request.Query["page"]);

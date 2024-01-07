@@ -97,7 +97,7 @@
         <ul class="pagination">
             <li class="page-item">
                 <a class="page-link"
-                   href="/Categories/Show/@Model.Id?page=1" aria-label="Previous">
+                   href="/Categories/Show/@(Model.Id)?page=1&sortType=@Context.Request.Query["sortType"]" aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
@@ -105,15 +105,40 @@
             {
                 <li class="page-item">
                     <a class="page-link"
-                       href="/Categories/Show/@Model.Id?page=@i">@(i)</a>
+                       href="/Categories/Show/@(Model.Id)?page=@(i)&sortType=@Context.Request.Query["sortType"]">@(i)</a>
                 </li>
             }
             <li class="page-item">
                 <a class="page-link"
-                   href="/Categories/Show/@Model.Id?page=@(ViewBag.lastPage)" aria-
+                   href="/Categories/Show/@(Model.Id)?page=@(ViewBag.lastPage)&sortType=@Context.Request.Query["sortType"]" aria-
                    label="Next">
 
                     <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <nav>
+        <ul class="sortType">
+            <li class="page-item">
+                <a class="page-link"
+                   href="/Categories/Show/@(Model.Id)?page=@(Context.Request.Query["page"])&sortType=0">
+                    Default sort
+                </a>
+            </li>
+
+            <li class="page-item">
+                <a class="page-link"
+                    href="/Categories/Show/@(Model.Id)?page=@(Context.Request.Query["page"])&sortType=1">
+                    Sort by discussion name
+                </a>
+            </li>
+
+            <li class="page-item">
+                <a class="page-link"
+                   href="/Categories/Show/@(Model.Id)?page=@(Context.Request.Query["page"])&sortType=2">
+                    Sort by discussion popularity
                 </a>
             </li>
         </ul>
