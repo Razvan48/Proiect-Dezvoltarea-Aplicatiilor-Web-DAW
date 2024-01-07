@@ -63,7 +63,7 @@
             <div class="col-md-8">
                 <div>
                     <h2>@discussion.Title</h2>
-                    <p>@discussion.Content</p>
+                    <p>@Html.Raw(@discussion.Content)</p>
                     <small>@discussion.Date</small>
                 </div>
                 <br>

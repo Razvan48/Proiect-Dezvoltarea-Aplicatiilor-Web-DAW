@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Ganss.Xss;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -198,12 +199,17 @@ namespace Proiect.Controllers
         [HttpPost]
         public IActionResult Edit(int id, Answer requestAnswer)
         {
+            var sanitizer = new HtmlSanitizer();
+
             Answer answer = db.Answers.Find(id);
 
             if (answer.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
             {
                 if (ModelState.IsValid)
                 {
+                    requestAnswer.Content = sanitizer.Sanitize(requestAnswer.Content);
+                    answer.Content = requestAnswer.Content;
+
                     answer.Content = requestAnswer.Content;
                     db.SaveChanges();
 

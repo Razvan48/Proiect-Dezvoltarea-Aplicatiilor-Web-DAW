@@ -29,3 +29,7 @@ body {
     color: inherit;
 }
 
+.note-editor .dropdown-toggle::after {
+    display: none;
+}
+

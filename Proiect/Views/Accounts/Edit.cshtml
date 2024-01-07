@@ -14,7 +14,7 @@
 	<br />
 
 	@Html.Label("AboutMe", "Sectiunea \"Despre mine\"")
-	@Html.EditorFor(m => m.AboutMe, new { htmlAttributes = new { @class = "form-control" } })
+	@Html.TextArea("AboutMe", null, new { @class = "summernote" })
 	@Html.ValidationMessageFor(m => m.AboutMe, null, new { @class = "text-danger" })
 	<br />
 

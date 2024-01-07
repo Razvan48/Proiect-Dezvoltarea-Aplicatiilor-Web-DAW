@@ -51,8 +51,7 @@
             </div>
         </div>
         <div class="col">
-            @* TODO: schimba fontul *@
-            <h3>@Model.Content</h3>
+            <h3>@Html.Raw(Model.Content)</h3>
             <br />
             <br />
 
@@ -146,7 +145,7 @@
                     <form method="post" action="/Answers/Edit/@answer.Id">
                         <label>Modifica raspunsul tau:</label>
                         <br />
-                        <textarea class="form-control" name="Content">@answer.Content</textarea>
+                        @Html.TextArea("Content", answer.Content, new { @class = "summernote" })
                         <br />
 
                         <div class="d-flex align-items-center">
@@ -157,7 +156,7 @@
                 }
                 else @* Afiseaza raspunsul *@
                 {
-                    <p>@answer.Content</p>
+                    <p>@Html.Raw(answer.Content)</p>
                     <br />
 
                     <div class="d-flex justify-content-between">
@@ -278,13 +277,10 @@
     <form method="post" action="/Discussions/AddAnswer/@Model.Id">
         <input type="hidden" name="DiscussionId" value="@Model.Id" />
 
-        <textarea class="form-control" name="Content"></textarea>
+        <textarea class="summernote" name="Content"></textarea>
         <br />
 
         <button class="btn btn-success" type="submit">Posteaza raspunsul tau</button>
-
-        @* TODO: delete *@
-        @* @Html.ValidationSummary(false, "", new { @class = "text-danger" }) *@
         <br />
     </form>
 </div>

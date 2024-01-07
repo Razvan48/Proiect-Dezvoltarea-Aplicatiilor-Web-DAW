@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Ganss.Xss;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -210,14 +211,16 @@ namespace Proiect.Controllers
         [HttpPost]
         public IActionResult AddAnswer([FromForm] Answer answer)
         {
-            // TODO: eroarea e scrisa in mesaj
-            // TODO: foloseste @Html.ValidationSummary
+            var sanitizer = new HtmlSanitizer();
 
             answer.Date = DateTime.Now;
             answer.UserId = _userManager.GetUserId(User);
 
             if (ModelState.IsValid)
             {
+                answer.Content = sanitizer.Sanitize(answer.Content);
+                answer.Content = (answer.Content);
+
                 db.Answers.Add(answer);
                 db.SaveChanges();
 
@@ -324,6 +327,8 @@ namespace Proiect.Controllers
         [HttpPost]
         public IActionResult Edit(int id, Discussion requestDiscussion)
         {
+            var sanitizer = new HtmlSanitizer();
+
             Discussion discussion = db.Discussions.Find(id);
 
             requestDiscussion.Date = DateTime.Now;
@@ -334,6 +339,7 @@ namespace Proiect.Controllers
                 if (discussion.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
                 {
                     discussion.Title = requestDiscussion.Title;
+                    requestDiscussion.Content = sanitizer.Sanitize(requestDiscussion.Content);
                     discussion.Content = requestDiscussion.Content;
                     db.SaveChanges();
 
@@ -372,11 +378,16 @@ namespace Proiect.Controllers
         [HttpPost]
         public IActionResult New(Discussion discussion)
         {
+            var sanitizer = new HtmlSanitizer();
+
             discussion.Date = DateTime.Now;
             discussion.UserId = _userManager.GetUserId(User);
 
             if (ModelState.IsValid)
             {
+                discussion.Content = sanitizer.Sanitize(discussion.Content);
+                discussion.Content = (discussion.Content);
+
                 db.Discussions.Add(discussion);
                 db.SaveChanges();
 

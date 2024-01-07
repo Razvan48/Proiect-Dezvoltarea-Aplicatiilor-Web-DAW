@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Ganss.Xss;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.Differencing;
@@ -57,9 +58,9 @@ namespace Proiect.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(string id, ApplicationUser requestedUser, IFormFile UserImage)
         {
-            ApplicationUser user = db.Users.Find(id);
+            var sanitizer = new HtmlSanitizer();
 
-            // TODO: trb sa punem o poza default pt orice utilizator
+            ApplicationUser user = db.Users.Find(id);
 
             if (ModelState.IsValid)
             {
@@ -79,6 +80,8 @@ namespace Proiect.Controllers
 
                 user.FirstName = requestedUser.FirstName;
                 user.LastName = requestedUser.LastName;
+                requestedUser.AboutMe = sanitizer.Sanitize(requestedUser.AboutMe);
+                user.AboutMe = requestedUser.AboutMe;
 
                 db.SaveChanges();
                 
