@@ -54,7 +54,8 @@
 
 @*De adaugat o lista cu discutiile pe aceasta categorie (paginata + posibilitate de a sorta dupa nume / popularitate (numar articole?)*@
 
-@foreach (var discussion in Model.Discussions)
+@*@foreach (var discussion in Model.Discussions)*@
+@foreach (var discussion in ViewBag.Discussions) @* in ViewBag.Discussions se afla doar discutiile de pe pagina curenta *@
 {
     <div class="container bg-light rounded-1">
         <div class="row">
@@ -90,3 +91,31 @@
         </div>
     </div>
 }
+
+<div>
+    <nav>
+        <ul class="pagination">
+            <li class="page-item">
+                <a class="page-link"
+                   href="/Categories/Show/@Model.Id?page=1" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            @for (int i = 1; i <= ViewBag.lastPage; i++)
+            {
+                <li class="page-item">
+                    <a class="page-link"
+                       href="/Categories/Show/@Model.Id?page=@i">@(i)</a>
+                </li>
+            }
+            <li class="page-item">
+                <a class="page-link"
+                   href="/Categories/Show/@Model.Id?page=@(ViewBag.lastPage)" aria-
+                   label="Next">
+
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>

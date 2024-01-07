@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Humanizer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -53,6 +54,21 @@ namespace Proiect.Controllers
             }
 
             SetAccessRights();
+
+            //paginare
+
+            var discussions = db.Discussions.Where(dis => dis.CategoryId == id);
+            int _perPage = 3;
+            int totalItems = discussions.Count();
+            var currentPage = Convert.ToInt32(HttpContext.Request.Query["page"]);
+            var offset = 0;
+            if (!currentPage.Equals(0))
+            {
+                offset = (currentPage - 1) * _perPage;
+            }
+            var paginatedDiscussions = discussions.Skip(offset).Take(_perPage);
+            ViewBag.lastPage = Math.Ceiling((float)totalItems / (float)_perPage);
+            ViewBag.Discussions = paginatedDiscussions;
 
             return View(category);
         }
