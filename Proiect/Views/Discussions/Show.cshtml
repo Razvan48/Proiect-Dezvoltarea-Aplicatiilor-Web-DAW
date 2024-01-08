@@ -41,11 +41,10 @@
                         <i class="bi bi-arrow-up-square h2"></i>
                     </button>
                 </form>
-
-                <div style="margin-top: 10px; margin-bottom: 10px;">@Model.NumberVotes</div>
+                <div style="text-align: center;margin-top: 10px; margin-bottom: 10px;">@Model.NumberVotes</div>
                 <form method="post" action="/Discussions/Downvote/@Model.Id">
                     <button type="submit" class="@(ViewBag.HasVoted == 2? "btn btn-danger" : "btn btn-outline-danger")">
-                        <i class="bi bi-arrow-down-circle h2"></i>
+                        <i class="bi bi-arrow-down-square h2"></i>
                     </button>
                 </form>
             </div>
@@ -128,10 +127,10 @@
                             <i class="bi bi-arrow-up-square h2"></i>
                         </button>
                     </form>
-                    <div style="margin-top: 10px; margin-bottom: 10px;">@answer.ANumberVotes</div>
+                    <div style="text-align: center; margin-top: 10px; margin-bottom: 10px;">@answer.ANumberVotes</div>
                     <form method="post" action="/Answers/DownvoteAnswer/@answer.Id">
                         <button type="submit" class="@(answer.userVoted == 2? "btn btn-danger" : "btn btn-outline-danger")">
-                            <i class="bi bi-arrow-down-circle h2"></i>
+                            <i class="bi bi-arrow-down-square h2"></i>
                         </button>
                     </form>
                 </div>
@@ -149,7 +148,7 @@
                         <br />
 
                         <div class="d-flex align-items-center">
-                            <button type="submit" class="btn btn-primary">Salveaza modificarile</button>
+                            <button type="submit" class="btn btn-primary" onclick="storeScrollPosition();">Salveaza modificarile</button>
                             <a class="btn btn-danger" style="margin-left: 5px;" href="/Discussions/Show/@Model.Id">Anuleaza</a>
                         </div>
                     </form>
@@ -164,7 +163,7 @@
                         {
                             <div class="d-flex align-items-center">
                                 <div>
-                                    <a class="btn btn-sm btn-outline-primary" style="border: none; font-size: 14px;" href="/Answers/Edit/@answer.Id"><i class="bi bi-pencil-square"></i>Editeaza</a>
+                                    <a class="btn btn-sm btn-outline-primary" style="border: none; font-size: 14px;" href="/Answers/Edit/@answer.Id" onclick="storeScrollPosition();"><i class="bi bi-pencil-square"></i>Editeaza</a>
                                 </div>
                                 <div>
                                     <form method="post" action="/Answers/Delete/@answer.Id">
@@ -220,7 +219,7 @@
                             <br />
 
                             <div class="d-flex align-items-center">
-                                <button type="submit" class="btn btn-primary">Salveaza modificarile</button>
+                                <button type="submit" class="btn btn-primary" onclick="storeScrollPosition();">Salveaza modificarile</button>
                                 <a class="btn btn-danger" style="margin-left: 5px;" href="/Discussions/Show/@Model.Id">Anuleaza</a>
                             </div>
                         </form>
@@ -238,7 +237,7 @@
                             <div>
                                 @if (comment.UserId == ViewBag.CurrentUser || ViewBag.IsAdmin)
                                 {
-                                    <a class="btn btn-sm btn-outline-primary" style="border: none; display: inline-block;" href="/Comments/Edit/@comment.Id"><i class="bi bi-pencil-square"></i></a>
+                                    <a class="btn btn-sm btn-outline-primary" style="border: none; display: inline-block;" href="/Comments/Edit/@comment.Id" onclick="storeScrollPosition();"><i class="bi bi-pencil-square"></i></a>
                                     <form method="post" style="display: inline-block; text-align: right;" action="/Comments/Delete/@comment.Id">
                                         <button class="btn btn-sm btn-outline-danger" style="border: none; align-self: end;" type="submit"><i class="bi bi-trash"></i></button>
                                     </form>
@@ -257,7 +256,7 @@
                         <textarea class="form-control" name="Content" rows="1" placeholder="Adauga comentariul tau..." style="border: none;"></textarea>
 
                         <div>
-                            <button class="btn btn-success" type="submit">Posteaza</button>
+                            <button class="btn btn-success" type="submit" onclick="storeScrollPosition();">Posteaza</button>
                         </div>
                     </div>
 
@@ -280,7 +279,7 @@
         <textarea class="summernote" name="Content"></textarea>
         <br />
 
-        <button class="btn btn-success" type="submit">Posteaza raspunsul tau</button>
+        <button class="btn btn-success" type="submit" onclick="storeScrollPosition();">Posteaza raspunsul tau</button>
         <br />
     </form>
 </div>

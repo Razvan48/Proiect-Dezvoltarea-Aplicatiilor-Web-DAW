@@ -2,7 +2,7 @@
     $('.summernote').summernote({
         height: 300,
         minHeight: 200,
-        focus: true,
+        focus: false
     });
 });
 
