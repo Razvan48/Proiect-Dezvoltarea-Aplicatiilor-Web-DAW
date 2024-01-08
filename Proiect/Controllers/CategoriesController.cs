@@ -113,7 +113,7 @@ namespace Proiect.Controllers
                 TempData["message"] = "Discussion Category successfully edited";
                 TempData["messageType"] = "alert-success";
 
-                return RedirectToAction("Index");
+                return RedirectToAction("Show", "Categories", new { category.Id });
             }
             else
             {
