@@ -30,22 +30,44 @@
                     <div>@notification.DateDay</div>
                 </div>
 
-                @if (notification.NewAnswer)
+                @if (notification.Type == 1)
                 {
                     <div style="margin-left: 20px;">
-                        Un nou raspuns la intrebarea ta
+                        <span>Un nou raspuns la intrebarea ta</span>
+                        <br />
+                        <span>@notification.Discussion.Title.Substring(0, Math.Min(100, notification.Discussion.Title.Length))</span>
                     </div>
                 }
-                else if (notification.NewComment)
+                else if (notification.Type == 2)
                 {
                     <div style="margin-left: 20px;">
-                        Un nou comentariu la raspunsul tau
+                        <span>Un nou comentariu la raspunsul tau</span>
+                        <br />
+                        <span>@notification.Discussion.Title.Substring(0, Math.Min(100, notification.Discussion.Title.Length))</span>
                     </div>
                 }
-                else if (notification.NewBestAnswer)
+                else if (notification.Type == 3)
                 {
                     <div style="margin-left: 20px;">
-                        Raspunsul tau a fost selectat ca fiind cel mai bun
+                        <span>Raspunsul tau a fost selectat ca fiind cel mai bun</span>
+                        <br />
+                        <span>@notification.Discussion.Title.Substring(0, Math.Min(100, notification.Discussion.Title.Length))</span>
+                    </div>
+                }
+                else if (notification.Type == 4)
+                {
+                    <div style="margin-left: 20px;">
+                        <span>Discutia la care ai raspuns a fost editata</span>
+                        <br />
+                        <span>@notification.Discussion.Title.Substring(0, Math.Min(100, notification.Discussion.Title.Length))</span>
+                    </div>
+                }
+                else if (notification.Type == 5)
+                {
+                    <div style="margin-left: 20px;">
+                        <span>Raspunsul la care ai comentat a fost editat</span>
+                        <br />
+                        <span>@notification.Discussion.Title.Substring(0, Math.Min(100, notification.Discussion.Title.Length))</span>
                     </div>
                 }
 

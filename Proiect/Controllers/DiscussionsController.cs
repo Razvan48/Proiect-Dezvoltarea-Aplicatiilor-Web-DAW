@@ -69,29 +69,38 @@ namespace Proiect.Controllers
 
             ApplicationUser currentUser = _userManager.GetUserAsync(User).Result;
 
-            foreach (var answer in discussion.Answers) {
+            foreach (var answer in discussion.Answers)
+            {
                 int answerTotalVotes = db.Votes.Count(vote => vote.AnswerId == answer.Id && vote.DidVote == 1) - db.Votes.Count(vote => vote.AnswerId == answer.Id && vote.DidVote == 2);
                 answer.ANumberVotes = answerTotalVotes;
 
-                if (currentUser != null) {
+                if (currentUser != null)
+                {
                     Vote userVote = db.Votes.FirstOrDefault(vote => vote.AnswerId == answer.Id && vote.UserId == currentUser.Id);
 
 
-                    if (userVote != null) {
+                    if (userVote != null)
+                    {
                         answer.userVoted = userVote.DidVote;
-                    } else {
+                    }
+                    else
+                    {
                         answer.userVoted = 0; // User hasn't voted for this answer
                     }
                 }
             }
 
 
-            if (currentUser != null) {
+            if (currentUser != null)
+            {
                 Vote existingVote = db.Votes.FirstOrDefault(v => v.DiscussionId == id && v.UserId == currentUser.Id);
 
-                if (existingVote != null) {
+                if (existingVote != null)
+                {
                     ViewBag.HasVoted = existingVote.DidVote;
-                } else {
+                }
+                else
+                {
                     ViewBag.HasVoted = 0;
                 }
             }
@@ -102,7 +111,8 @@ namespace Proiect.Controllers
 
         [Authorize(Roles = "User,Admin")]
         [HttpPost]
-        public IActionResult Upvote(int id) {
+        public IActionResult Upvote(int id)
+        {
 
 
             ApplicationUser currentUser = _userManager.GetUserAsync(User).Result;
@@ -114,14 +124,19 @@ namespace Proiect.Controllers
             // Check if the user has already voted on this discussion
             Vote existingVote = db.Votes.FirstOrDefault(v => v.DiscussionId == id && v.UserId == currentUser.Id);
 
-            if (existingVote != null) {
+            if (existingVote != null)
+            {
                 // User has already voted, update the existing vote
-                if (existingVote.DidVote == 1) { // we already upvoted, so we remove the vote
+                if (existingVote.DidVote == 1)
+                { // we already upvoted, so we remove the vote
                     db.Votes.Remove(existingVote);
                     ViewBag.HasVoted = 0;
-                } else {
+                }
+                else
+                {
                     db.Votes.Remove(existingVote);
-                    Vote newVote = new Vote {
+                    Vote newVote = new Vote
+                    {
                         UserId = currentUser.Id,
                         DiscussionId = id,
                         AnswerId = null, // Set AnswerId based on the associated Answer
@@ -130,8 +145,11 @@ namespace Proiect.Controllers
                     ViewBag.HasVoted = 1;
                     db.Votes.Add(newVote);
                 }
-            } else {
-                Vote newVote = new Vote {
+            }
+            else
+            {
+                Vote newVote = new Vote
+                {
                     UserId = currentUser.Id,
                     DiscussionId = id,
                     AnswerId = null, // Set AnswerId based on the associated Answer
@@ -155,7 +173,8 @@ namespace Proiect.Controllers
 
         [Authorize(Roles = "User,Admin")]
         [HttpPost]
-        public IActionResult Downvote(int id) {
+        public IActionResult Downvote(int id)
+        {
             ApplicationUser currentUser = _userManager.GetUserAsync(User).Result;
 
             Discussion discussion = db.Discussions.Include("User").Include("Answers").Include("Answers.User").Include("Answers.Comments").Include("Answers.Comments.User")
@@ -164,15 +183,20 @@ namespace Proiect.Controllers
             // Check if the user has already voted on this discussion
             Vote existingVote = db.Votes.FirstOrDefault(v => v.DiscussionId == id && v.UserId == currentUser.Id);
 
-            if (existingVote != null) {
+            if (existingVote != null)
+            {
                 // User has already voted, update the existing vote
-                if (existingVote.DidVote == 2) { // we already downvoted, so we remove the vote
+                if (existingVote.DidVote == 2)
+                { // we already downvoted, so we remove the vote
                     db.Votes.Remove(existingVote);
                     ViewBag.HasVoted = 0;
-                } else {
+                }
+                else
+                {
                     db.Votes.Remove(existingVote);
-                    
-                    Vote newVote = new Vote {
+
+                    Vote newVote = new Vote
+                    {
                         UserId = currentUser.Id,
                         DiscussionId = id,
                         AnswerId = null, // Set AnswerId based on the associated Answer
@@ -181,9 +205,12 @@ namespace Proiect.Controllers
                     ViewBag.HasVoted = 2;
                     db.Votes.Add(newVote);
                 }
-            } else {
+            }
+            else
+            {
                 // Check if the associated answer exists
-                Vote newVote = new Vote {
+                Vote newVote = new Vote
+                {
                     UserId = currentUser.Id,
                     DiscussionId = id,
                     AnswerId = null, // Set AnswerId based on the associated Answer
@@ -191,7 +218,7 @@ namespace Proiect.Controllers
                 };
                 ViewBag.HasVoted = 2;
                 db.Votes.Add(newVote);
-                
+
             }
 
             db.SaveChanges();
@@ -233,9 +260,7 @@ namespace Proiect.Controllers
                     DateDay = DateTime.Now.Day,
                     UserId = discussion.UserId,
                     DiscussionId = answer.DiscussionId,
-                    NewAnswer = true,
-                    NewComment = false,
-                    NewBestAnswer = false
+                    Type = 1
                 };
 
                 db.Notifications.Add(NewNotification);
@@ -275,9 +300,8 @@ namespace Proiect.Controllers
                     DateDay = DateTime.Now.Day,
                     UserId = answer.UserId,
                     DiscussionId = answer.DiscussionId,
-                    NewAnswer = false,
-                    NewComment = true,
-                    NewBestAnswer = false
+                    AnswerId = answer.Id,
+                    Type = 2
                 };
 
                 db.Notifications.Add(NewNotification);
@@ -326,7 +350,9 @@ namespace Proiect.Controllers
         {
             var sanitizer = new HtmlSanitizer();
 
-            Discussion discussion = db.Discussions.Find(id);
+            Discussion discussion = db.Discussions.Include("Answers")
+                                    .Where(dis => dis.Id == id)
+                                    .First();
 
             requestDiscussion.Date = DateTime.Now;
 
@@ -340,6 +366,29 @@ namespace Proiect.Controllers
                     requestDiscussion.Content = sanitizer.Sanitize(requestDiscussion.Content);
                     discussion.Content = requestDiscussion.Content;
                     db.SaveChanges();
+
+                    // adauga si o notificare catre toti utilizatorii care au raspuns la aceasta discutie
+                    Dictionary<string, bool> UserIds = new Dictionary<string, bool>();
+                    foreach (Answer answer in discussion.Answers)
+                    {
+                        if (!UserIds.ContainsKey(answer.UserId))
+                        {
+                            UserIds.Add(answer.UserId, true);
+
+                            Notification NewNotification = new Notification
+                            {
+                                Read = false,
+                                DateMonth = DateTime.Now.ToString("MMMM", CultureInfo.InvariantCulture),
+                                DateDay = DateTime.Now.Day,
+                                UserId = answer.UserId,
+                                DiscussionId = discussion.Id,
+                                Type = 4
+                            };
+
+                            db.Notifications.Add(NewNotification);
+                            db.SaveChanges();
+                        }
+                    }
 
                     TempData["message"] = "Discussion successfully edited";
                     TempData["messageType"] = "alert-success";

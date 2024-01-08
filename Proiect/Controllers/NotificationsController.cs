@@ -36,13 +36,13 @@ namespace Proiect.Controllers
 
             // utilizatorul are acces doar la inbox-ul propriu
             string CurrentUserId = _userManager.GetUserId(User);
-            
+
             if (id == null || CurrentUserId != id)
             {
                 return Redirect("/Home/Index");
             }
 
-            ViewBag.Notifications = db.Notifications.Include("Discussion")
+            ViewBag.Notifications = db.Notifications.Include("Discussion").Include("Answer")
                                     .Where(n => n.UserId == CurrentUserId)
                                     .OrderByDescending(n => n.Id)
                                     .ToList();

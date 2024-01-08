@@ -21,11 +21,19 @@ namespace Proiect.Models
 
         public virtual Discussion? Discussion { get; set; }
 
-        public bool? NewAnswer { get; set; }
+        public int? AnswerId { get; set; }
 
-        public bool? NewComment { get; set; }
+        public virtual Answer? Answer { get; set; }
 
-        public bool? NewBestAnswer { get; set; }
+        /*
+            Type:
+            1. New Answer 
+            2. New Comment 
+            3. New Best Answer -> TODO
+            4. Edit Discussion
+            5. Edit Answer
+        */
+        public int? Type { get; set; }
     }
 }
 

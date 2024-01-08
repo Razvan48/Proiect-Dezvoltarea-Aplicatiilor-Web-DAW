@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using Proiect.Data;
 using Proiect.Data.Migrations;
 using Proiect.Models;
+using System.Collections.Generic;
+using System.Globalization;
 
 namespace Proiect.Controllers
 {
@@ -207,7 +209,9 @@ namespace Proiect.Controllers
         {
             var sanitizer = new HtmlSanitizer();
 
-            Answer answer = db.Answers.Find(id);
+            Answer answer = db.Answers.Include("Comments").Include("Discussion")
+                            .Where(ans => ans.Id == id)
+                            .First();
 
             requestAnswer.Date = DateTime.Now;
 
@@ -220,6 +224,30 @@ namespace Proiect.Controllers
                     answer.Content = requestAnswer.Content;
 
                     db.SaveChanges();
+
+                    // adauga si o notificare catre toti utilizatorii care au comentat la acest raspuns
+                    Dictionary<string, bool> UserIds = new Dictionary<string, bool>();
+                    foreach (Comment comment in answer.Comments)
+                    {
+                        if (!UserIds.ContainsKey(comment.UserId))
+                        {
+                            UserIds.Add(comment.UserId, true);
+
+                            Notification NewNotification = new Notification
+                            {
+                                Read = false,
+                                DateMonth = DateTime.Now.ToString("MMMM", CultureInfo.InvariantCulture),
+                                DateDay = DateTime.Now.Day,
+                                UserId = comment.UserId,
+                                DiscussionId = answer.DiscussionId,
+                                AnswerId = answer.Id,
+                                Type = 5
+                            };
+
+                            db.Notifications.Add(NewNotification);
+                            db.SaveChanges();
+                        }
+                    }
 
                     TempData["message"] = "Raspunsul a fost editat";
                     TempData["messageType"] = "alert-success";
