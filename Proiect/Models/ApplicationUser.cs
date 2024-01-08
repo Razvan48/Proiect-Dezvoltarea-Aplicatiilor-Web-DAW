@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace Proiect.Models
 {
@@ -10,10 +11,18 @@ namespace Proiect.Models
         public virtual ICollection<Discussion>? Discussions { get; set; }
 
         // atribute suplimentare pentru user
+        [Required(ErrorMessage = "Prenumele este obligatoriu")]
         public string? FirstName { get; set; }
+
+        [Required(ErrorMessage = "Numele este obligatoriu")]
         public string? LastName { get; set; }
+
+        [Required(ErrorMessage = "Imaginea este obligatorie")]
         public string? Image { get; set; }
+
+        [Required(ErrorMessage = "Sectiunea 'Despre Mine' este obligatorie")]
         public string? AboutMe { get; set; }
+
         public DateTime Date { get; set; }
 
         public ApplicationUser()
