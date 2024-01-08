@@ -49,9 +49,6 @@ namespace Proiect.Controllers
 
             return Redirect("/Discussions/Show/" + comment.Answer.DiscussionId);
         }
-        
-        // TODO: Edit
-        // TODO: POST Edit
 
         [Authorize(Roles = "User,Editor,Admin")]
         [HttpGet]
