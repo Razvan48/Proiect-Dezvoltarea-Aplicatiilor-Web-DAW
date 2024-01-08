@@ -42,8 +42,9 @@ namespace Proiect.Controllers
             return View();
         }
 
+
         [HttpGet]
-        public IActionResult Show(int id)
+        public IActionResult Show(int id, int page = 1, int sortType = 0)
         {
             Category category = db.Categories.Include("Discussions").Where(cat => cat.Id == id).First();
 
@@ -57,18 +58,22 @@ namespace Proiect.Controllers
 
             //paginare
             var discussions = db.Discussions.Where(dis => dis.CategoryId == id);
-            var sortType = Convert.ToInt32(HttpContext.Request.Query["sortType"]);
-            if (sortType == 1)
+            //var sortType = Convert.ToInt32(HttpContext.Request.Query["sortType"]); (eroare)
+            if (sortType == 1) // sortare dupa titlu
             {
-                discussions = db.Discussions.Where(dis => dis.CategoryId == id).OrderBy(dis => dis.Title);
+                //discussions = db.Discussions.Where(dis => dis.CategoryId == id).OrderBy(dis => dis.Title);
+                discussions = discussions.OrderBy(dis => dis.Title);
             }
-            else if (sortType == 2)
+            else if (sortType == 2) // sortare custom (dupa popularitate (numarul de answers + comments per discutie))
             {
+                // discussions = discussions.OrderByDescending(dis => dis.Answers.Count());
 
+                discussions = discussions.OrderByDescending(dis => dis.Answers.Count() + dis.Answers.SelectMany(ans => ans.Comments).Count());
             }
             int _perPage = 3;
             int totalItems = discussions.Count();
-            var currentPage = Convert.ToInt32(HttpContext.Request.Query["page"]);
+            //var currentPage = Convert.ToInt32(HttpContext.Request.Query["page"]); (eroare)
+            var currentPage = page;
             var offset = 0;
             if (!currentPage.Equals(0))
             {
