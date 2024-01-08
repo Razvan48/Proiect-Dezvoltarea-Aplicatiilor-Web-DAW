@@ -56,7 +56,31 @@ namespace Proiect.Controllers
 
         [Authorize(Roles = "User,Admin")]
         [HttpPost]
-        public async Task<IActionResult> Edit(string id, ApplicationUser requestedUser, IFormFile UserImage)
+        public async Task<IActionResult> UploadImage(string id, IFormFile UserImage)
+        {
+            ApplicationUser user = db.Users.Find(id);
+
+            // salveaza poza
+            if (UserImage != null && UserImage.Length > 0)
+            {
+                var storagePath = Path.Combine(_env.WebRootPath, "images", UserImage.FileName);
+                var databaseFileName = "/images/" + UserImage.FileName;
+
+                using (var fileStream = new FileStream(storagePath, FileMode.Create))
+                {
+                    await UserImage.CopyToAsync(fileStream);
+                }
+
+                user.Image = databaseFileName;
+                db.SaveChanges();
+            }
+
+            return Redirect("/Accounts/Show/" + id);
+        }
+
+        [Authorize(Roles = "User,Admin")]
+        [HttpPost]
+        public async Task<IActionResult> Edit(string id, ApplicationUser requestedUser)
         {
             var sanitizer = new HtmlSanitizer();
 
@@ -64,20 +88,6 @@ namespace Proiect.Controllers
 
             if (ModelState.IsValid)
             {
-                // salveaza poza
-                if (UserImage != null && UserImage.Length > 0)
-                {
-                    var storagePath = Path.Combine(_env.WebRootPath, "images", UserImage.FileName);
-                    var databaseFileName = "/images/" + UserImage.FileName;
-
-                    using (var fileStream = new FileStream(storagePath, FileMode.Create))
-                    {
-                        await UserImage.CopyToAsync(fileStream);
-                    }
-
-                    user.Image = databaseFileName;
-                }
-
                 user.FirstName = requestedUser.FirstName;
                 user.LastName = requestedUser.LastName;
                 requestedUser.AboutMe = sanitizer.Sanitize(requestedUser.AboutMe);

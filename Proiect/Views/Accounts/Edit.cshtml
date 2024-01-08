@@ -18,11 +18,6 @@
 	@Html.ValidationMessageFor(m => m.AboutMe, null, new { @class = "text-danger" })
 	<br />
 
-	@* TODO: nu e posibil sa pun default value pt input type="file" *@
-	@Html.Label("UserImage", "Poza de profil")
-	<input class="form-control" type="file" accept="image/png, image/jpeg" name="UserImage" />
-	<br />
-
 	<input class="btn btn-success" type="submit" value="Upload" />
 	<br />
 

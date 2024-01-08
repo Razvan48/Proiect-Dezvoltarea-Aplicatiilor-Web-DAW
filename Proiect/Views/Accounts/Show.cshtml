@@ -6,10 +6,10 @@
 <div class="container">
     <div class="d-flex flex-column">
         <div class="d-flex">
-            <div>
+            <div class="d-flex flex-column">
                 @if (Model.Image != null && Model.Image != "")
                 {
-                    <img src="@Model.Image" alt="User Image" style="width:200px;">
+                    <img src="@Model.Image" alt="User Image" style="width:240px;">
                 }
                 else
                 {
@@ -31,6 +31,15 @@
                     <div>
                         <a class="btn btn-outline-primary" href="/Accounts/Edit/@Model.Id"><i class="bi bi-pencil-square"></i>Editeaza</a>
                     </div>
+                    <br />
+
+                    <form enctype="multipart/form-data" asp-controller="Accounts" asp-action="UploadImage" asp-route-id="@Model.Id" method="post">
+                        @Html.Label("UserImage", "Schimba poza de profil")
+                        <div class="d-flex">
+                            <input class="form-control" type="file" accept="image/png, image/jpeg" name="UserImage" />
+                            <button class="btn btn-primary" type="submit">Incarca</button>
+                        </div>
+                    </form>
                 }
             </div>
         </div>
@@ -102,7 +111,7 @@
         </div>
         <br />
 
-        <div>Top posts cu 3 categorii: All, Discussions, Answers, Comments</div>
+        @* TODO: Top posts cu 3 categorii: All, Discussions, Answers, Comments *@
     </div>
 </div>
 
