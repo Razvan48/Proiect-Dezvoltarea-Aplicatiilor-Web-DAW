@@ -25,8 +25,7 @@
                     <span class="rounded-pill bg-secondary mr-2 px-4 py-2 text-white">@ViewBag.Role</span>
                 </div>
 
-                @* TODO: are voie administratorul sa editeze profilul altor utilizatori? *@
-                @if (Model.Id == ViewBag.CurrentUser || ViewBag.IsAdmin)
+                @if (Model.Id == ViewBag.CurrentUser)
                 {
                     <div>
                         <a class="btn btn-outline-primary" href="/Accounts/Edit/@Model.Id"><i class="bi bi-pencil-square"></i>Editeaza</a>

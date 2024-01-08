@@ -51,31 +51,15 @@ namespace Proiect.Controllers
         {
             ApplicationUser user = db.Users.Find(id);
 
-            return View(user);
-        }
-
-        [Authorize(Roles = "User,Admin")]
-        [HttpPost]
-        public async Task<IActionResult> UploadImage(string id, IFormFile UserImage)
-        {
-            ApplicationUser user = db.Users.Find(id);
-
-            // salveaza poza
-            if (UserImage != null && UserImage.Length > 0)
+            // verifica daca este profilul utilizatorului curent
+            if (user.Id == _userManager.GetUserId(User))
             {
-                var storagePath = Path.Combine(_env.WebRootPath, "images", UserImage.FileName);
-                var databaseFileName = "/images/" + UserImage.FileName;
-
-                using (var fileStream = new FileStream(storagePath, FileMode.Create))
-                {
-                    await UserImage.CopyToAsync(fileStream);
-                }
-
-                user.Image = databaseFileName;
-                db.SaveChanges();
+                return View(user);
             }
-
-            return Redirect("/Accounts/Show/" + id);
+            else
+            {
+                return Redirect("/Home");
+            }
         }
 
         [Authorize(Roles = "User,Admin")]
@@ -86,21 +70,57 @@ namespace Proiect.Controllers
 
             ApplicationUser user = db.Users.Find(id);
 
-            if (ModelState.IsValid)
+            // verifica daca este profilul utilizatorului curent
+            if (user.Id == _userManager.GetUserId(User))
             {
-                user.FirstName = requestedUser.FirstName;
-                user.LastName = requestedUser.LastName;
-                requestedUser.AboutMe = sanitizer.Sanitize(requestedUser.AboutMe);
-                user.AboutMe = requestedUser.AboutMe;
+                if (ModelState.IsValid)
+                {
+                    user.FirstName = requestedUser.FirstName;
+                    user.LastName = requestedUser.LastName;
+                    requestedUser.AboutMe = sanitizer.Sanitize(requestedUser.AboutMe);
+                    user.AboutMe = requestedUser.AboutMe;
 
-                db.SaveChanges();
+                    db.SaveChanges();
                 
-                return Redirect("/Accounts/Show/" + id);
+                    return Redirect("/Accounts/Show/" + id);
+                }
+                else
+                {
+                    return View(requestedUser);
+                }
             }
             else
             {
-                return View(requestedUser);
+                return Redirect("/Home");
             }
+        }
+
+        [Authorize(Roles = "User,Admin")]
+        [HttpPost]
+        public async Task<IActionResult> UploadImage(string id, IFormFile UserImage)
+        {
+            ApplicationUser user = db.Users.Find(id);
+
+            // verifica daca este profilul utilizatorului curent
+            if (user.Id == _userManager.GetUserId(User))
+            {
+                // salveaza poza
+                if (UserImage != null && UserImage.Length > 0)
+                {
+                    var storagePath = Path.Combine(_env.WebRootPath, "images", UserImage.FileName);
+                    var databaseFileName = "/images/" + UserImage.FileName;
+
+                    using (var fileStream = new FileStream(storagePath, FileMode.Create))
+                    {
+                        await UserImage.CopyToAsync(fileStream);
+                    }
+
+                    user.Image = databaseFileName;
+                    db.SaveChanges();
+                }
+            }
+
+            return Redirect("/Accounts/Show/" + id);
         }
 
         // Conditii de afisare a butoanelor de editare si stergere
