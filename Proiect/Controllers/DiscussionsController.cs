@@ -393,14 +393,14 @@ namespace Proiect.Controllers
                     TempData["message"] = "Discussion successfully edited";
                     TempData["messageType"] = "alert-success";
 
-                    return RedirectToAction("Show", "Categories", new { Id = discussion.CategoryId });
+                    return RedirectToAction("Show", "Discussions", new { discussion.Id });
                 }
                 else
                 {
                     TempData["message"] = "Nu aveti dreptul sa faceti modificari asupra unei discutii care nu va apartine";
                     TempData["messageType"] = "alert-danger";
 
-                    return RedirectToAction("Show", "Categories", new { Id = discussion.CategoryId });
+                    return RedirectToAction("Show", "Discussions", new { discussion.Id });
                 }
             }
             else
