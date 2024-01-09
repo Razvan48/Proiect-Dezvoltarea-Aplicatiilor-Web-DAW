@@ -269,6 +269,7 @@ namespace Proiect.Controllers
                     DateDay = DateTime.Now.Day,
                     UserId = discussion.UserId,
                     DiscussionId = answer.DiscussionId,
+                    AnswerId = answer.Id,
                     Type = 1
                 };
 
@@ -313,6 +314,7 @@ namespace Proiect.Controllers
                         UserId = answer.UserId,
                         DiscussionId = answer.DiscussionId,
                         AnswerId = answer.Id,
+                        CommentId = comment.Id,
                         Type = 2
                     };
 

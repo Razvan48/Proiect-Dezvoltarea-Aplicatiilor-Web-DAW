@@ -33,9 +33,11 @@
                 @if (notification.Type == 1)
                 {
                     <div style="margin-left: 20px;">
-                        <span>Un nou raspuns la intrebarea ta</span>
+                        <span>Un nou raspuns la intrebarea</span>
                         <br />
                         <span>@notification.Discussion.Title.Substring(0, Math.Min(100, notification.Discussion.Title.Length))</span>
+                        <br />
+                        <span>Raspunsul lui: @notification.Answer.User.Email</span>
                     </div>
                 }
                 else if (notification.Type == 2)
@@ -44,6 +46,8 @@
                         <span>Un nou comentariu la raspunsul tau</span>
                         <br />
                         <span>@notification.Discussion.Title.Substring(0, Math.Min(100, notification.Discussion.Title.Length))</span>
+                        <br />
+                        <span>Comentariul lui: @notification.Comment.User.Email</span>
                     </div>
                 }
                 else if (notification.Type == 3)

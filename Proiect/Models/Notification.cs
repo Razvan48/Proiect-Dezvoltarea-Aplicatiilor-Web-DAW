@@ -25,6 +25,10 @@ namespace Proiect.Models
 
         public virtual Answer? Answer { get; set; }
 
+        public int? CommentId { get; set; }
+
+        public virtual Comment? Comment { get; set; }
+
         /*
             Type:
             1. New Answer 
