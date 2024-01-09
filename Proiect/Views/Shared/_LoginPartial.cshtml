@@ -10,7 +10,14 @@
         </li>
         *@
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="" asp-controller="Notifications" asp-action="Index" asp-route-id="@UserManager.GetUserId(User)"><i class="bi bi-bell h5"></i></a>
+            <a class="nav-link text-dark" asp-area="" asp-controller="Notifications" asp-action="Index" asp-route-id="@UserManager.GetUserId(User)">
+                <i class="bi bi-bell h5" style="position: relative;">
+                    @if (@UserManager.GetUserAsync(User).Result.UnreadNotifications > 0)
+                    {
+                        <i class="bi bi-exclamation text-danger h2" style="position: absolute; top: -10px; right: -17px;"></i>
+                    }
+                </i>
+            </a>
         </li>
         <li class="nav-item">
             <a class="nav-link text-dark" asp-area="" asp-controller="Accounts" asp-action="Show" asp-route-id="@UserManager.GetUserId(User)">Profile</a>

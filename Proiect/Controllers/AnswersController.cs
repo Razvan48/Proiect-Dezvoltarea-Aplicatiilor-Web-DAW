@@ -205,7 +205,7 @@ namespace Proiect.Controllers
         {
             var sanitizer = new HtmlSanitizer();
 
-            Answer answer = db.Answers.Include("Comments").Include("Discussion")
+            Answer answer = db.Answers.Include("Comments").Include("Discussion").Include("Comments.User").Include("Discussion.User")
                             .Where(ans => ans.Id == id)
                             .First();
 
@@ -229,7 +229,7 @@ namespace Proiect.Controllers
                         {
                             UserIds.Add(comment.UserId, true);
 
-                            Notification NewNotification = new Notification
+                            Notification NewNotification1 = new Notification
                             {
                                 Read = false,
                                 DateMonth = DateTime.Now.ToString("MMMM", CultureInfo.InvariantCulture),
@@ -240,10 +240,31 @@ namespace Proiect.Controllers
                                 Type = 5
                             };
 
-                            db.Notifications.Add(NewNotification);
+                            // incrementeaza nr de notificari necitite ale user-ului
+                            comment.User.UnreadNotifications++;
+
+                            db.Notifications.Add(NewNotification1);
                             db.SaveChanges();
                         }
                     }
+
+                    // notificare pentru cel care a initiat discutia 
+                    Notification NewNotification2 = new Notification
+                    {
+                        Read = false,
+                        DateMonth = DateTime.Now.ToString("MMMM", CultureInfo.InvariantCulture),
+                        DateDay = DateTime.Now.Day,
+                        UserId = answer.Discussion.UserId,
+                        DiscussionId = answer.DiscussionId,
+                        AnswerId = answer.Id,
+                        Type = 6
+                    };
+
+                    // incrementeaza nr de notificari necitite ale user-ului
+                    answer.Discussion.User.UnreadNotifications++;
+
+                    db.Notifications.Add(NewNotification2);
+                    db.SaveChanges();
 
                     TempData["message"] = "Raspunsul a fost editat";
                     TempData["messageType"] = "alert-success";

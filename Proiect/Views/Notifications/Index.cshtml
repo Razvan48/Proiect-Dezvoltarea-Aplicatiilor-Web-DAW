@@ -76,6 +76,16 @@
                         <span>Raspunsul lui: @notification.Answer.User.Email</span>
                     </div>
                 }
+                else if (notification.Type == 6)
+                {
+                    <div style="margin-left: 20px;">
+                        <span>Raspunsul de la o discutie initiata de tine a fost editat</span>
+                        <br />
+                        <span>@notification.Discussion.Title.Substring(0, Math.Min(100, notification.Discussion.Title.Length))</span>
+                        <br />
+                        <span>Raspunsul lui: @notification.Answer.User.Email</span>
+                    </div>
+                }
 
                 <div style="margin-left: auto;">
                     <form method="post" action="/Notifications/Delete/@notification.Id">

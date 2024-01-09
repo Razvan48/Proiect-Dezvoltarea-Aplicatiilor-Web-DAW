@@ -54,11 +54,15 @@ namespace Proiect.Controllers
         [HttpGet]
         public IActionResult MarkAsRead(int id)
         {
-            Notification notification = db.Notifications.Include("Discussion")
+            Notification notification = db.Notifications.Include("Discussion").Include("User")
                                         .Where(n => n.Id == id)
                                         .First();
 
-            notification.Read = true;
+            if (notification.Read == false)
+            {
+                notification.Read = true;
+                notification.User.UnreadNotifications--;
+            }
             db.SaveChanges();
 
             return Redirect("/Discussions/Show/" + notification.DiscussionId);

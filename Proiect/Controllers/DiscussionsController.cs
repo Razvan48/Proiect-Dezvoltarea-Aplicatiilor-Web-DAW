@@ -260,7 +260,9 @@ namespace Proiect.Controllers
                 db.Answers.Add(answer);
                 db.SaveChanges();
 
-                Discussion discussion = db.Discussions.Find(answer.DiscussionId);
+                Discussion discussion = db.Discussions.Include("User")
+                                        .Where(dis => dis.Id == answer.DiscussionId)
+                                        .First();
 
                 Notification NewNotification = new Notification
                 {
@@ -272,6 +274,9 @@ namespace Proiect.Controllers
                     AnswerId = answer.Id,
                     Type = 1
                 };
+
+                // incrementeaza nr de notificari necitite ale user-ului
+                discussion.User.UnreadNotifications++;
 
                 db.Notifications.Add(NewNotification);
                 db.SaveChanges();
@@ -296,7 +301,9 @@ namespace Proiect.Controllers
             comment.Date = DateTime.Now;
             comment.UserId = _userManager.GetUserId(User);
 
-            Answer answer = db.Answers.Find(comment.AnswerId);
+            Answer answer = db.Answers.Include("User")
+                            .Where(ans => ans.Id == comment.AnswerId)
+                            .First();
 
             if (ModelState.IsValid)
             {
@@ -317,6 +324,9 @@ namespace Proiect.Controllers
                         CommentId = comment.Id,
                         Type = 2
                     };
+
+                    // incrementeaza nr de notificari necitite ale user-ului
+                    answer.User.UnreadNotifications++;
 
                     db.Notifications.Add(NewNotification);
                     db.SaveChanges();
@@ -365,7 +375,7 @@ namespace Proiect.Controllers
         {
             var sanitizer = new HtmlSanitizer();
 
-            Discussion discussion = db.Discussions.Include("Answers")
+            Discussion discussion = db.Discussions.Include("Answers").Include("Answers.User")
                                     .Where(dis => dis.Id == id)
                                     .First();
 
@@ -399,6 +409,9 @@ namespace Proiect.Controllers
                                 DiscussionId = discussion.Id,
                                 Type = 4
                             };
+
+                            // incrementeaza nr de notificari necitite ale user-ului
+                            answer.User.UnreadNotifications++;
 
                             db.Notifications.Add(NewNotification);
                             db.SaveChanges();

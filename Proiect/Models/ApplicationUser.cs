@@ -9,6 +9,7 @@ namespace Proiect.Models
         public virtual ICollection<Answer>? Answers { get; set; }
         public virtual ICollection<Comment>? Comments { get; set; }
         public virtual ICollection<Discussion>? Discussions { get; set; }
+        public virtual ICollection<Notification>? Notifications { get; set; }
 
         // atribute suplimentare pentru user
         [Required(ErrorMessage = "Prenumele este obligatoriu")]
@@ -25,6 +26,8 @@ namespace Proiect.Models
 
         public DateTime Date { get; set; }
 
+        public int? UnreadNotifications { get; set; }
+
         public ApplicationUser()
         {
             FirstName = "-";
@@ -32,6 +35,7 @@ namespace Proiect.Models
             Image = "/images/intrebare.png";
             AboutMe = "-";
             Date = DateTime.Now;
+            UnreadNotifications = 0;
         }
     }
 }
