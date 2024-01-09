@@ -7,6 +7,7 @@ using Proiect.Data;
 using Proiect.Data.Migrations;
 using Proiect.Models;
 using System.Globalization;
+using System.Linq;
 
 namespace Proiect.Controllers
 {
@@ -28,20 +29,20 @@ namespace Proiect.Controllers
         // oricine are dreptul sa vada
         // Afisare discutie impreuna cu toate raspunsurile + comentariile
         [HttpGet]
-        public IActionResult Show(int id)
+        public IActionResult Show(int id, int sortType = 0)
         {
             Discussion discussion = db.Discussions
                                         .Include("User")
-                                        .Include(d => d.Votes)  // Include discussion votes
+                                        .Include(d => d.Votes)  // voturi discutii
                                         .Include(d => d.Answers)
-                                            .ThenInclude(a => a.User)  // Include answer user
-                                            .ThenInclude(a => a.Votes)  // Include answer votes
-                                        .Include(d => d.Answers)
-                                            .ThenInclude(a => a.Comments)
-                                                .ThenInclude(c => c.User)  // Include comment user
+                                            .ThenInclude(a => a.User)  // raspunsuri user
+                                            .ThenInclude(a => a.Votes)  // voturi user
                                         .Include(d => d.Answers)
                                             .ThenInclude(a => a.Comments)
-                                                .ThenInclude(c => c.Votes)  // Include comment votes
+                                                .ThenInclude(c => c.User)  // comentarii user
+                                        .Include(d => d.Answers)
+                                            .ThenInclude(a => a.Comments)
+                                                .ThenInclude(c => c.Votes)  // voturi comentarii
                                         .Where(dis => dis.Id == id)
                                         .FirstOrDefault();
 
@@ -63,13 +64,19 @@ namespace Proiect.Controllers
 
             SetAccessRights();
 
-            //vote count
+            var answers = db.Answers.Where(ans=> ans.DiscussionId == id);
+            if (sortType == 1) {
+                answers = answers.OrderByDescending(ans => db.Votes.Count(vote => vote.AnswerId == ans.Id && vote.DidVote == 1) - db.Votes.Count(vote => vote.AnswerId == ans.Id && vote.DidVote == 2));
+            }
+
             int discussionTotalVotes = db.Votes.Count(vote => vote.DiscussionId == discussion.Id && vote.DidVote == 1) - db.Votes.Count(vote => vote.DiscussionId == discussion.Id && vote.DidVote == 2);
             discussion.NumberVotes = discussionTotalVotes;
+            
 
             ApplicationUser currentUser = _userManager.GetUserAsync(User).Result;
 
-            foreach (var answer in discussion.Answers)
+            
+            foreach (var answer in answers)
             {
                 int answerTotalVotes = db.Votes.Count(vote => vote.AnswerId == answer.Id && vote.DidVote == 1) - db.Votes.Count(vote => vote.AnswerId == answer.Id && vote.DidVote == 2);
                 answer.ANumberVotes = answerTotalVotes;
@@ -85,10 +92,14 @@ namespace Proiect.Controllers
                     }
                     else
                     {
-                        answer.userVoted = 0; // User hasn't voted for this answer
+                        answer.userVoted = 0; // userul nu a votat
                     }
                 }
             }
+
+            discussion.Answers = answers.ToList();
+
+            ViewBag.Answers = answers;
 
 
             if (currentUser != null)
@@ -121,15 +132,14 @@ namespace Proiect.Controllers
                         .Include(d => d.Votes).Where(dis => dis.Id == id)
                         .First();
 
-            // Check if the user has already voted on this discussion
+            // verifica daca userul a votat deja discutia
             Vote existingVote = db.Votes.FirstOrDefault(v => v.DiscussionId == id && v.UserId == currentUser.Id);
 
             if (existingVote != null)
             {
-                // User has already voted, update the existing vote
+                // userul a votat => se schimba votul
                 if (existingVote.DidVote == 1)
-                { // we already upvoted, so we remove the vote
-                    db.Votes.Remove(existingVote);
+                {   // click pe aceeasi actiune => se scoate votul
                     ViewBag.HasVoted = 0;
                 }
                 else
@@ -139,8 +149,8 @@ namespace Proiect.Controllers
                     {
                         UserId = currentUser.Id,
                         DiscussionId = id,
-                        AnswerId = null, // Set AnswerId based on the associated Answer
-                        DidVote = 1 // Set to 1 for upvote
+                        AnswerId = null, 
+                        DidVote = 1
                     };
                     ViewBag.HasVoted = 1;
                     db.Votes.Add(newVote);
@@ -152,8 +162,8 @@ namespace Proiect.Controllers
                 {
                     UserId = currentUser.Id,
                     DiscussionId = id,
-                    AnswerId = null, // Set AnswerId based on the associated Answer
-                    DidVote = 1 // Set to 1 for upvote
+                    AnswerId = null,
+                    DidVote = 1
                 };
                 ViewBag.HasVoted = 1;
                 db.Votes.Add(newVote);
@@ -161,14 +171,12 @@ namespace Proiect.Controllers
 
             db.SaveChanges();
 
-            // Get the updated vote count
+            // numar voturi
             int discussionTotalVotes = db.Votes.Count(vote => vote.DiscussionId == id && vote.DidVote == 1) - db.Votes.Count(vote => vote.DiscussionId == id && vote.DidVote == 2);
 
-            // Set the updated vote count in ViewBag
             discussion.NumberVotes = discussionTotalVotes;
 
-            // Redirect to  the discussion page or perform any other desired action
-            return RedirectToAction("Show", new { id = id });
+            return RedirectToAction("Show", new { id });
         }
 
         [Authorize(Roles = "User,Admin")]
@@ -180,14 +188,15 @@ namespace Proiect.Controllers
             Discussion discussion = db.Discussions.Include("User").Include("Answers").Include("Answers.User").Include("Answers.Comments").Include("Answers.Comments.User")
                        .Include(d => d.Votes).Where(dis => dis.Id == id)
                        .First();
-            // Check if the user has already voted on this discussion
+
+            // verifica daca userul a votat deja discutia
             Vote existingVote = db.Votes.FirstOrDefault(v => v.DiscussionId == id && v.UserId == currentUser.Id);
 
             if (existingVote != null)
             {
-                // User has already voted, update the existing vote
-                if (existingVote.DidVote == 2)
-                { // we already downvoted, so we remove the vote
+                // userul a votat => se schimba votul
+                if (existingVote.DidVote == 2) { 
+                    // click pe aceeasi actiune => se scoate votul
                     db.Votes.Remove(existingVote);
                     ViewBag.HasVoted = 0;
                 }
@@ -199,8 +208,8 @@ namespace Proiect.Controllers
                     {
                         UserId = currentUser.Id,
                         DiscussionId = id,
-                        AnswerId = null, // Set AnswerId based on the associated Answer
-                        DidVote = 2 // Set to 2 for downvote
+                        AnswerId = null,
+                        DidVote = 2 
                     };
                     ViewBag.HasVoted = 2;
                     db.Votes.Add(newVote);
@@ -208,13 +217,12 @@ namespace Proiect.Controllers
             }
             else
             {
-                // Check if the associated answer exists
                 Vote newVote = new Vote
                 {
                     UserId = currentUser.Id,
                     DiscussionId = id,
-                    AnswerId = null, // Set AnswerId based on the associated Answer
-                    DidVote = 2 // Set to 2 for downvote
+                    AnswerId = null,
+                    DidVote = 2 
                 };
                 ViewBag.HasVoted = 2;
                 db.Votes.Add(newVote);
@@ -223,14 +231,12 @@ namespace Proiect.Controllers
 
             db.SaveChanges();
 
-            // Get the updated vote count
+            // numar voturi
             int discussionTotalVotes = db.Votes.Count(vote => vote.DiscussionId == id && vote.DidVote == 1) - db.Votes.Count(vote => vote.DiscussionId == id && vote.DidVote == 2);
 
-            // Set the updated vote count in ViewBag
             discussion.NumberVotes = discussionTotalVotes;
 
-            // Redirect to the discussion page or perform any other desired action
-            return RedirectToAction("Show", new { id = id });
+            return RedirectToAction("Show", new { id });
         }
 
         // Postare raspuns

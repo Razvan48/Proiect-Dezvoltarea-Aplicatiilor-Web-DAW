@@ -10,7 +10,6 @@ namespace Proiect.Data
             : base(options)
         {
         }
-
         public DbSet<Vote> Votes { get; set; }
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<Discussion> Discussions { get; set; }

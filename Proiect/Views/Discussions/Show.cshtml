@@ -37,13 +37,13 @@
             @* TODO: schimba fontul + dimensiunea *@
             <div class="d-inline-flex flex-column">
                 <form method="post" action="/Discussions/Upvote/@Model.Id">
-                    <button type="submit" class="@(ViewBag.HasVoted == 1 ? "btn btn-success" : "btn btn-outline-success")">
+                    <button type="submit" class="@(ViewBag.HasVoted == 1 ? "btn btn-success" : "btn btn-outline-success")" onclick="storeScrollPosition();">
                         <i class="bi bi-arrow-up-square h2"></i>
                     </button>
                 </form>
                 <div style="text-align: center;margin-top: 10px; margin-bottom: 10px;">@Model.NumberVotes</div>
                 <form method="post" action="/Discussions/Downvote/@Model.Id">
-                    <button type="submit" class="@(ViewBag.HasVoted == 2? "btn btn-danger" : "btn btn-outline-danger")">
+                    <button type="submit" class="@(ViewBag.HasVoted == 2? "btn btn-danger" : "btn btn-outline-danger")" onclick="storeScrollPosition();">
                         <i class="bi bi-arrow-down-square h2"></i>
                     </button>
                 </form>
@@ -106,8 +106,13 @@
 
 @* Nr. raspunsuri + criterii de sortare *@
 <div class="d-flex justify-content-between">
-    <div>Raspunsuri: nr_raspunsuri_primite</div>
-    <div>Sortare: criterii_sortare</div>
+    <div>Raspunsuri: @Model.Answers.Count()</div>
+    <div>
+        <a class="page-link"
+           href="/Discussions/Show/@(Model.Id)?sortType=1">
+            Sortare: dupa voturi
+        </a>
+    </div>
 </div>
 <div>Pagini cu raspunsuri</div>
 
@@ -115,21 +120,20 @@
 <br />
 
 @* Afisare raspunsuri impreuna cu butoanele de editare si stergere *@
-@foreach (var answer in Model.Answers)
-{
+@foreach (var answer in Model.Answers) {
     <div class="container">
         <div class="row">
             <div class="col-md-1 d-flex justify-content-center">
                 @* TODO: schimba fontul + dimensiunea *@
                 <div class="d-inline-flex flex-column">
                     <form method="post" action="/Answers/UpvoteAnswer/@answer.Id">
-                        <button type="submit" class="@(answer.userVoted == 1 ? "btn btn-success" : "btn btn-outline-success")">
+                        <button type="submit" class="@(answer.userVoted == 1 ? "btn btn-success" : "btn btn-outline-success")" onclick="storeScrollPosition();">
                             <i class="bi bi-arrow-up-square h2"></i>
                         </button>
                     </form>
                     <div style="text-align: center; margin-top: 10px; margin-bottom: 10px;">@answer.ANumberVotes</div>
                     <form method="post" action="/Answers/DownvoteAnswer/@answer.Id">
-                        <button type="submit" class="@(answer.userVoted == 2? "btn btn-danger" : "btn btn-outline-danger")">
+                        <button type="submit" class="@(answer.userVoted == 2? "btn btn-danger" : "btn btn-outline-danger")" onclick="storeScrollPosition();">
                             <i class="bi bi-arrow-down-square h2"></i>
                         </button>
                     </form>

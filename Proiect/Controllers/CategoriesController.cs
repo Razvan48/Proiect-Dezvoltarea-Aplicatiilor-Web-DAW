@@ -69,6 +69,9 @@ namespace Proiect.Controllers
                 // discussions = discussions.OrderByDescending(dis => dis.Answers.Count());
 
                 discussions = discussions.OrderByDescending(dis => dis.Answers.Count() + dis.Answers.SelectMany(ans => ans.Comments).Count());
+            } else if (sortType == 3) // sortare dupa numarul de upvote-uri al discutiei
+            {
+                discussions = discussions.OrderByDescending(dis => db.Votes.Count(vote => vote.DiscussionId == dis.Id && vote.DidVote == 1) - db.Votes.Count(vote => vote.DiscussionId == dis.Id && vote.DidVote == 2));
             }
             int _perPage = 3;
             int totalItems = discussions.Count();

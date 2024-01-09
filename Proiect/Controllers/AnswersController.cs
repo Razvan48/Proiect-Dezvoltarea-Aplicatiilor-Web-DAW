@@ -74,40 +74,39 @@ namespace Proiect.Controllers
                 return BadRequest("Answer not found.");
             }
 
-            // Check if the user has already voted on this discussion
+            // verifica daca am votat deja
             Vote existingVote = db.Votes.FirstOrDefault(v => v.AnswerId == id && v.UserId == currentUser.Id);
 
             if (existingVote != null) {
-                // User has already voted, update the existing vote
-                if (existingVote.DidVote == 1) { // we already upvoted, so we remove the vote
+                // userul a votat deja
+                if (existingVote.DidVote == 1) { // aceeasi actiune => scoatem votul curent
                     db.Votes.Remove(existingVote);
                 } else {
                     db.Votes.Remove(existingVote);
                     Vote newVote = new Vote {
                         UserId = currentUser.Id,
                         DiscussionId = null,
-                        AnswerId = answer.Id, // Set AnswerId based on the associated Answer
-                        DidVote = 1 // Set to 1 for upvote
+                        AnswerId = answer.Id, 
+                        DidVote = 1 
                     };
                     db.Votes.Add(newVote);
                 }
             } else {    
-                // User hasn't voted yet, create a new vote
+
                 Vote newVote = new Vote {
                     UserId = currentUser.Id,
                     DiscussionId = null,
-                    AnswerId = answer.Id, // Set AnswerId based on the associated Answer
-                    DidVote = 1 // Set to 1 for upvote
+                    AnswerId = answer.Id,
+                    DidVote = 1
                 };
                 db.Votes.Add(newVote);
             }
 
             db.SaveChanges();
 
-            // Get the updated vote count
+            // numar voturi
             int answerTotalVotes = db.Votes.Count(vote => vote.DiscussionId == id && vote.DidVote == 1) - db.Votes.Count(vote => vote.DiscussionId == id && vote.DidVote == 2);
 
-            // Set the updated vote count in ViewBag
             answer.ANumberVotes = answerTotalVotes;
 
             Vote userVote = db.Votes.FirstOrDefault(vote => vote.AnswerId == answer.Id && vote.UserId == currentUser.Id);
@@ -115,10 +114,9 @@ namespace Proiect.Controllers
             if (userVote != null) {
                 answer.userVoted = userVote.DidVote;
             } else {
-                answer.userVoted = 0; // User hasn't voted for this answer
+                answer.userVoted = 0; // nu a votat inca
             }
 
-            // Redirect to  the discussion page or perform any other desired action
             return Redirect("/Discussions/Show/" + answer.DiscussionId);
         }
 
@@ -135,20 +133,20 @@ namespace Proiect.Controllers
                 return BadRequest("Answer not found.");
             }
 
-            // Check if the user has already voted on this answer
+            // verifica daca am votat deja
             Vote existingVote = db.Votes.FirstOrDefault(v => v.AnswerId == id && v.UserId == currentUser.Id);
 
             if (existingVote != null) {
-                // User has already voted, update the existing vote
-                if (existingVote.DidVote == 2) { // we already downvoted, so we remove the vote
+                // userul a votat deja
+                if (existingVote.DidVote == 2) { // aceeasi actiune => scoatem votul curent
                     db.Votes.Remove(existingVote);
                 } else {
                     db.Votes.Remove(existingVote);
                     Vote newVote = new Vote {
                         UserId = currentUser.Id,
                         DiscussionId = null,
-                        AnswerId = answer.Id, // Set AnswerId based on the associated Answer
-                        DidVote = 2 // Set to 2 for downvote
+                        AnswerId = answer.Id, 
+                        DidVote = 2 
                     };
                     db.Votes.Add(newVote);
                 }
@@ -156,8 +154,8 @@ namespace Proiect.Controllers
                 Vote newVote = new Vote {
                     UserId = currentUser.Id,
                     DiscussionId = null,
-                    AnswerId = answer.Id, // Set AnswerId based on the associated Answer
-                    DidVote = 2 // Set to 2 for downvote
+                    AnswerId = answer.Id, 
+                    DidVote = 2 
                 };
                 db.Votes.Add(newVote);
         
@@ -165,10 +163,9 @@ namespace Proiect.Controllers
 
             db.SaveChanges();
 
-            // Get the updated vote count
+            // numar voturi
             int answerTotalVotes = db.Votes.Count(vote => vote.AnswerId == id && vote.DidVote == 1) - db.Votes.Count(vote => vote.AnswerId == id && vote.DidVote == 2);
 
-            // Set the updated vote count in ViewBag
             answer.ANumberVotes = answerTotalVotes;
 
             Vote userVote = db.Votes.FirstOrDefault(vote => vote.AnswerId == answer.Id && vote.UserId == currentUser.Id);
@@ -176,10 +173,9 @@ namespace Proiect.Controllers
             if (userVote != null) {
                 answer.userVoted = userVote.DidVote;
             } else {
-                answer.userVoted = 0; // User hasn't voted for this answer
+                answer.userVoted = 0; // nu a votat inca
             }
 
-            // Redirect to the discussion page or perform any other desired action
             return Redirect("/Discussions/Show/" + answer.DiscussionId);
         }
 

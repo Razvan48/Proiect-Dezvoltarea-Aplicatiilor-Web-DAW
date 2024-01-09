@@ -141,6 +141,13 @@
                     Sort by discussion popularity
                 </a>
             </li>
+
+            <li class="page-item">
+                <a class="page-link"
+                   href="/Categories/Show/@(Model.Id)?page=@(Context.Request.Query["page"])&sortType=3">
+                   Sort by vote popularity
+                </a>
+            </li>
         </ul>
     </nav>
 </div>
