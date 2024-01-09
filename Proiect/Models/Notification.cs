@@ -37,6 +37,7 @@ namespace Proiect.Models
             4. Edit Discussion  -> notificare pt toti cei care au adaugat un comentariu
             5. Edit Answer      -> notificare pt toti cei care au comentat
             6. Edit Answer      -> notificare pt cel care a deschis discutia
+            7. Edit Comment     -> notificare pt cel care a postat raspunsul
         */
         public int? Type { get; set; }
     }
