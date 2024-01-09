@@ -50,21 +50,19 @@ namespace Proiect.Controllers
             if (dis.Content.Trim().ToLower().Contains(search))
                 return true;
 
-            if (dis.Answers != null)
-            {
-                foreach (var ans in dis.Answers)
-                {
-                    if (ans.Content.Trim().ToLower().Contains(search))
-                        return true;
+            var answers = db.Discussions.Include("Answers").Where(dis2 => dis2.Id == dis.Id);
 
-                    if (ans.Comments != null)
-                    {
-                        foreach (var comm in ans.Comments)
-                        {
-                            if (comm.Content.Trim().ToLower().Contains(search))
-                                return true;
-                        }
-                    }
+            foreach (var ans in answers)
+            {
+                if (ans.Content.Trim().ToLower().Contains(search))
+                    return true;
+
+                var comments = db.Answers.Include("Comments").Where(ans2 => ans2.Id == ans.Id);
+
+                foreach (var comm in comments)
+                {
+                    if (comm.Content.Trim().ToLower().Contains(search))
+                        return true;
                 }
             }
 
