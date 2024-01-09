@@ -34,12 +34,17 @@ namespace Proiect.Controllers
                               .First();
 
             // sterge notificarile care aveau legatura cu aceast comentariu
-            List<Notification> notifications = db.Notifications
+            List<Notification> notifications = db.Notifications.Include("User")
                                                .Where(not => not.CommentId == comment.Id)
                                                .ToList();
 
             foreach (Notification notification in notifications)
             {
+                if (notification.Read == false)
+                {
+                    notification.User.UnreadNotifications--;
+                }
+
                 db.Notifications.Remove(notification);
             }
 

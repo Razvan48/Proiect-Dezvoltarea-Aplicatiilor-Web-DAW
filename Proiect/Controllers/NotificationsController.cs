@@ -72,11 +72,18 @@ namespace Proiect.Controllers
         [HttpPost]
         public ActionResult Delete(int id)
         {
-            Notification notification = db.Notifications.Find(id);
+            Notification notification = db.Notifications.Include("User")
+                                        .Where(not => not.Id == id)
+                                        .First();
 
             // verificam daca notificarea ii apartine user-ului care incearca sa il stearga
             if (notification.UserId == _userManager.GetUserId(User))
             {
+                if (notification.Read == false)
+                {
+                    notification.User.UnreadNotifications--;
+                }
+
                 db.Notifications.Remove(notification);
                 db.SaveChanges();
 

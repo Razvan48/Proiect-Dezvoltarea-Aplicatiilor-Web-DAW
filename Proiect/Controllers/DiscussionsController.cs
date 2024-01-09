@@ -503,12 +503,17 @@ namespace Proiect.Controllers
             db.SaveChanges();
 
             // sterge notificarile care aveau legatura cu aceasta discutie
-            List<Notification> notifications = db.Notifications
+            List<Notification> notifications = db.Notifications.Include("User")
                                                .Where(not => not.DiscussionId == discussion.Id)
                                                .ToList();
 
             foreach (Notification notification in notifications)
             {
+                if (notification.Read == false)
+                {
+                    notification.User.UnreadNotifications--;
+                }
+
                 db.Notifications.Remove(notification);
             }
 
