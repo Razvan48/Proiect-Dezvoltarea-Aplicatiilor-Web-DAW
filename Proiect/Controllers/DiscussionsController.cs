@@ -118,7 +118,6 @@ namespace Proiect.Controllers
                 }
             }
 
-
             return View(discussion);
         }
 
@@ -126,8 +125,6 @@ namespace Proiect.Controllers
         [HttpPost]
         public IActionResult Upvote(int id)
         {
-
-
             ApplicationUser currentUser = _userManager.GetUserAsync(User).Result;
 
             Discussion discussion = db.Discussions.Include("User").Include("Answers").Include("Answers.User").Include("Answers.Comments").Include("Answers.Comments.User")

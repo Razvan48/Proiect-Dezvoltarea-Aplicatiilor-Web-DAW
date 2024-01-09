@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Proiect.Data;
 
@@ -11,9 +12,10 @@ using Proiect.Data;
 namespace Proiect.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240109192912_111")]
+    partial class _111
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -183,9 +185,6 @@ namespace Proiect.Data.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<bool>("hasAward")
-                        .HasColumnType("bit");
-
                     b.Property<int>("userVoted")
                         .HasColumnType("int");
 
@@ -285,35 +284,6 @@ namespace Proiect.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Proiect.Models.Award", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int?>("AnswerId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("DidAward")
-                        .HasColumnType("bit");
-
-                    b.Property<int?>("DiscussionId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AnswerId");
-
-                    b.HasIndex("DiscussionId");
-
-                    b.ToTable("Awards");
-                });
-
             modelBuilder.Entity("Proiect.Models.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -393,9 +363,6 @@ namespace Proiect.Data.Migrations
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<bool?>("didAward")
-                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -552,21 +519,6 @@ namespace Proiect.Data.Migrations
                     b.Navigation("Discussion");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Proiect.Models.Award", b =>
-                {
-                    b.HasOne("Proiect.Models.Answer", "Answer")
-                        .WithMany()
-                        .HasForeignKey("AnswerId");
-
-                    b.HasOne("Proiect.Models.Discussion", "Discussion")
-                        .WithMany()
-                        .HasForeignKey("DiscussionId");
-
-                    b.Navigation("Answer");
-
-                    b.Navigation("Discussion");
                 });
 
             modelBuilder.Entity("Proiect.Models.Comment", b =>

@@ -51,6 +51,15 @@ namespace Proiect.Controllers
             }
             ViewBag.votesTotal = userTotal;
 
+            //number of awards
+            var userAwards = 0;
+
+            foreach (var answer in user.Answers) {
+                if (answer.hasAward == true)
+                    ++userAwards;
+            }
+            ViewBag.awardsTotal = userAwards;
+
             var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
             ViewBag.Role = role;
 

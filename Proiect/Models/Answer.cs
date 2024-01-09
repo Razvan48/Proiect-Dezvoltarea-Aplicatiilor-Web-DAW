@@ -10,6 +10,8 @@ namespace Proiect.Models
         public ICollection<Vote> Votes { get; set; } = new List<Vote>();
         public int ANumberVotes { get; set; }
 
+        public bool hasAward { get; set; }
+
         public int userVoted {  get; set; }
 
         [Required(ErrorMessage = "Continutul este obligatoriu")]

@@ -163,6 +163,10 @@
                 }
                 else @* Afiseaza raspunsul *@
                 {
+                    @if (answer.hasAward) {
+                        <i class="bi bi-award-fill" style="color: gold; font-size: 24px;"></i>
+                    }
+
                     <p>@Html.Raw(answer.Content)</p>
                     <br />
 
@@ -184,6 +188,31 @@
                         {
                             <span></span>
                         }
+
+                        <div class="d-flex align-items-center">
+                            @if (Model.didAward == null || Model.didAward == false) {
+                                @if ((Model.UserId == ViewBag.CurrentUser && answer.UserId != ViewBag.CurrentUser) || ViewBag.IsAdmin) {
+                                    <div>
+                                        <form method="post" action="/Answers/GiveAward/@answer.Id">
+                                            <button type="submit" class="btn btn-warning" style="border: none; font-size: 15px;" onclick="storeScrollPosition();">
+                                                <i class="bi bi-award-fill"></i> Give award
+                                            </button>
+                                        </form>
+                                    </div>
+                                }
+                            }
+                        
+
+                            @if (ViewBag.isAdmin && @answer.hasAward) {
+                                <div>
+                                    <form method="post" action="/Answers/RemoveAward/@answer.Id">
+                                        <button type="submit" class="btn btn-danger" style="border: none; font-size: 15px;" onclick="storeScrollPosition();">
+                                            <i class="bi bi-award-fill"></i> Remove award
+                                        </button>
+                                    </form>
+                                </div>
+                            }
+                        </div>
 
                         <div class="d-flex flex-column justify-content-center" style="width: 200px; height: 70px;">
                             <div>

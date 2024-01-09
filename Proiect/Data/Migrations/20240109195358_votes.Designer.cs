@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Proiect.Data;
 
@@ -11,9 +12,10 @@ using Proiect.Data;
 namespace Proiect.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240109195358_votes")]
+    partial class votes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -302,16 +304,13 @@ namespace Proiect.Data.Migrations
                     b.Property<int?>("DiscussionId")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("AnswerId");
+                    b.HasIndex("DiscussionId")
+                        .IsUnique()
+                        .HasFilter("[DiscussionId] IS NOT NULL");
 
-                    b.HasIndex("DiscussionId");
-
-                    b.ToTable("Awards");
+                    b.ToTable("Award");
                 });
 
             modelBuilder.Entity("Proiect.Models.Category", b =>
@@ -393,9 +392,6 @@ namespace Proiect.Data.Migrations
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<bool?>("didAward")
-                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -556,17 +552,9 @@ namespace Proiect.Data.Migrations
 
             modelBuilder.Entity("Proiect.Models.Award", b =>
                 {
-                    b.HasOne("Proiect.Models.Answer", "Answer")
-                        .WithMany()
-                        .HasForeignKey("AnswerId");
-
-                    b.HasOne("Proiect.Models.Discussion", "Discussion")
-                        .WithMany()
-                        .HasForeignKey("DiscussionId");
-
-                    b.Navigation("Answer");
-
-                    b.Navigation("Discussion");
+                    b.HasOne("Proiect.Models.Discussion", null)
+                        .WithOne("Award")
+                        .HasForeignKey("Proiect.Models.Award", "DiscussionId");
                 });
 
             modelBuilder.Entity("Proiect.Models.Comment", b =>
@@ -690,6 +678,8 @@ namespace Proiect.Data.Migrations
             modelBuilder.Entity("Proiect.Models.Discussion", b =>
                 {
                     b.Navigation("Answers");
+
+                    b.Navigation("Award");
 
                     b.Navigation("Votes");
                 });

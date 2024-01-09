@@ -8,19 +8,18 @@ using Proiect.Data.Migrations;
 using Proiect.Models;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Security.Claims;
 
 namespace Proiect.Controllers
 {
-    public class AnswersController : Controller
-    {
+    public class AnswersController : Controller {
         private readonly ApplicationDbContext db;
 
         private readonly UserManager<ApplicationUser> _userManager;
 
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public AnswersController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
-        {
+        public AnswersController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager) {
             db = context;
             _userManager = userManager;
             _roleManager = roleManager;
@@ -29,31 +28,26 @@ namespace Proiect.Controllers
         // Sterge din baza de date un raspuns postat
         [Authorize(Roles = "User,Admin")]
         [HttpPost]
-        public IActionResult Delete(int id)
-        {
+        public IActionResult Delete(int id) {
             Answer answer = db.Answers.Include("Comments")
                             .Where(ans => ans.Id == id)
                             .First();
 
             // sterge manual toate comentariile de la acest raspuns
-            foreach (Comment comment in answer.Comments)
-            {
+            foreach (Comment comment in answer.Comments) {
                 db.Comments.Remove(comment);
             }
 
             db.SaveChanges();
 
             // verificam daca discutia ii apartine user-ului care incearca sa editeze /SAU/ daca este admin
-            if (answer.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
-            {
+            if (answer.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin")) {
                 db.Answers.Remove(answer);
                 db.SaveChanges();
 
                 TempData["message"] = "Raspunsul a fost sters";
                 TempData["messageType"] = "alert-success";
-            }
-            else
-            {
+            } else {
                 TempData["message"] = "Nu puteti sa stergeti raspunsul altor utilizatori";
                 TempData["messageType"] = "alert-danger";
             }
@@ -86,12 +80,12 @@ namespace Proiect.Controllers
                     Vote newVote = new Vote {
                         UserId = currentUser.Id,
                         DiscussionId = null,
-                        AnswerId = answer.Id, 
-                        DidVote = 1 
+                        AnswerId = answer.Id,
+                        DidVote = 1
                     };
                     db.Votes.Add(newVote);
                 }
-            } else {    
+            } else {
 
                 Vote newVote = new Vote {
                     UserId = currentUser.Id,
@@ -145,8 +139,8 @@ namespace Proiect.Controllers
                     Vote newVote = new Vote {
                         UserId = currentUser.Id,
                         DiscussionId = null,
-                        AnswerId = answer.Id, 
-                        DidVote = 2 
+                        AnswerId = answer.Id,
+                        DidVote = 2
                     };
                     db.Votes.Add(newVote);
                 }
@@ -154,11 +148,11 @@ namespace Proiect.Controllers
                 Vote newVote = new Vote {
                     UserId = currentUser.Id,
                     DiscussionId = null,
-                    AnswerId = answer.Id, 
-                    DidVote = 2 
+                    AnswerId = answer.Id,
+                    DidVote = 2
                 };
                 db.Votes.Add(newVote);
-        
+
             }
 
             db.SaveChanges();
@@ -181,22 +175,71 @@ namespace Proiect.Controllers
 
         [Authorize(Roles = "User,Editor,Admin")]
         [HttpGet]
-        public IActionResult Edit(int id)
-        {
+        public IActionResult Edit(int id) {
             Answer answer = db.Answers.Find(id);
 
-            if (answer.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
-            {
+            if (answer.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin")) {
                 TempData["EditAnswerID"] = id;
                 return Redirect("/Discussions/Show/" + answer.DiscussionId);
-            }
-            else
-            {
+            } else {
                 TempData["message"] = "Nu aveti dreptul sa editati un raspuns care nu va apartine"; ;
                 TempData["messageType"] = "alert-success";
 
                 return Redirect("/Discussions/Show/" + answer.DiscussionId);
             }
+        }
+
+        [Authorize(Roles = "User, Admin")]
+        [HttpPost]
+        public IActionResult GiveAward(int id) {
+            Answer answer = db.Answers.Find(id);
+
+            Discussion discussion = db.Discussions.Find(answer.DiscussionId);
+
+            Award x = new Award { DidAward = false, DiscussionId = discussion.Id };
+
+            if (answer.hasAward == null) {
+                answer.hasAward = false;
+            }
+
+            if (discussion.didAward == null) {
+                discussion.didAward = false;
+            }
+
+            if (answer.hasAward == false &&
+                (User.HasClaim(ClaimTypes.Role, "Admin") || answer.UserId != _userManager.GetUserId(User)) &&
+                discussion.didAward == false) {
+                if (answer.UserId != null) {
+                    x.UserId = answer.UserId;
+                }
+
+                x.DidAward = true;
+                discussion.didAward = true;
+                answer.hasAward = true;
+            }
+
+            db.Awards.Add(x);
+            db.SaveChanges();
+
+            return Redirect("/Discussions/Show/" + answer.DiscussionId);
+        }
+
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public IActionResult RemoveAward(int id) {
+            Answer answer = db.Answers.Find(id);
+            Discussion discussion = db.Discussions.Find(answer.DiscussionId);
+            var existingAward = db.Awards.FirstOrDefault(a => a.DiscussionId == discussion.Id);
+            if (answer.hasAward == true && User.HasClaim(ClaimTypes.Role, "Admin")) {
+                discussion.didAward = null;
+                answer.hasAward = false;
+                db.Awards.Remove(existingAward);
+            }
+
+            db.SaveChanges();
+
+            return Redirect("/Discussions/Show/" + answer.DiscussionId);
         }
 
         [Authorize(Roles = "User,Admin")]

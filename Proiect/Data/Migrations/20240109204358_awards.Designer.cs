@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Proiect.Data;
 
@@ -11,9 +12,10 @@ using Proiect.Data;
 namespace Proiect.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240109204358_awards")]
+    partial class awards
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -309,9 +311,11 @@ namespace Proiect.Data.Migrations
 
                     b.HasIndex("AnswerId");
 
-                    b.HasIndex("DiscussionId");
+                    b.HasIndex("DiscussionId")
+                        .IsUnique()
+                        .HasFilter("[DiscussionId] IS NOT NULL");
 
-                    b.ToTable("Awards");
+                    b.ToTable("Award");
                 });
 
             modelBuilder.Entity("Proiect.Models.Category", b =>
@@ -393,9 +397,6 @@ namespace Proiect.Data.Migrations
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<bool?>("didAward")
-                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -561,8 +562,8 @@ namespace Proiect.Data.Migrations
                         .HasForeignKey("AnswerId");
 
                     b.HasOne("Proiect.Models.Discussion", "Discussion")
-                        .WithMany()
-                        .HasForeignKey("DiscussionId");
+                        .WithOne("Award")
+                        .HasForeignKey("Proiect.Models.Award", "DiscussionId");
 
                     b.Navigation("Answer");
 
@@ -690,6 +691,8 @@ namespace Proiect.Data.Migrations
             modelBuilder.Entity("Proiect.Models.Discussion", b =>
                 {
                     b.Navigation("Answers");
+
+                    b.Navigation("Award");
 
                     b.Navigation("Votes");
                 });

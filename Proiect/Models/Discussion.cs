@@ -9,6 +9,8 @@ namespace Proiect.Models
         public int Id { get; set; }
 
         public ICollection<Vote> Votes { get; set; } = new List<Vote>();
+        
+        public bool? didAward { get; set; }
         public int NumberVotes { get; set; }
 
         [Required(ErrorMessage = "Discussion title is compulsory")]
