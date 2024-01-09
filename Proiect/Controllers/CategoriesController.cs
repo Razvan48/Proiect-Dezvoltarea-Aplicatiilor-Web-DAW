@@ -45,21 +45,22 @@ namespace Proiect.Controllers
         [NonAction]
         private bool relevantDiscussion(Discussion dis, string search)
         {
-            if (dis.Title.Trim().ToLower().Contains(search))
-                return true;
-            if (dis.Content.Trim().ToLower().Contains(search))
+            if (dis.Title.Trim().ToLower().Contains(search) || dis.Content.Trim().ToLower().Contains(search))
                 return true;
 
-            var answers = db.Discussions.Include("Answers").Where(dis2 => dis2.Id == dis.Id);
+            var discussionAnswers = db.Answers
+                .Include(ans => ans.Comments)
+                .Where(ans => ans.DiscussionId == dis.Id);
 
-            foreach (var ans in answers)
+            foreach (var ans in discussionAnswers)
             {
                 if (ans.Content.Trim().ToLower().Contains(search))
                     return true;
 
-                var comments = db.Answers.Include("Comments").Where(ans2 => ans2.Id == ans.Id);
+                if (ans.Comments == null)
+                    continue;
 
-                foreach (var comm in comments)
+                foreach (var comm in ans.Comments)
                 {
                     if (comm.Content.Trim().ToLower().Contains(search))
                         return true;
