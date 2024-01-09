@@ -8,6 +8,7 @@ using NuGet.Protocol.Plugins;
 using Proiect.Data;
 using Proiect.Models;
 using System.Data;
+using System.Net;
 
 namespace Proiect.Controllers
 {
@@ -38,6 +39,17 @@ namespace Proiect.Controllers
                                    .First();
 
             SetAccessRights();
+            
+
+            // number of votes the user has
+            var userTotal = 0;
+            foreach (var discussion in user.Discussions) {
+                userTotal += db.Votes.Count(vote => vote.DiscussionId == discussion.Id && vote.DidVote == 1) - db.Votes.Count(vote => vote.DiscussionId == discussion.Id && vote.DidVote == 2);
+            }
+            foreach (var answer in user.Answers) {
+                userTotal += db.Votes.Count(vote => vote.AnswerId == answer.Id && vote.DidVote == 1) - db.Votes.Count(vote => vote.AnswerId == answer.Id && vote.DidVote == 2);
+            }
+            ViewBag.votesTotal = userTotal;
 
             var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
             ViewBag.Role = role;

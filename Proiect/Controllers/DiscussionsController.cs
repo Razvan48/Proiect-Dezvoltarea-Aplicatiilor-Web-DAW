@@ -142,6 +142,7 @@ namespace Proiect.Controllers
                 // userul a votat => se schimba votul
                 if (existingVote.DidVote == 1)
                 {   // click pe aceeasi actiune => se scoate votul
+                    db.Votes.Remove(existingVote);
                     ViewBag.HasVoted = 0;
                 }
                 else
