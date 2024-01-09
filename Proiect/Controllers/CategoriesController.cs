@@ -42,6 +42,35 @@ namespace Proiect.Controllers
             return View();
         }
 
+        [NonAction]
+        private bool relevantDiscussion(Discussion dis, string search)
+        {
+            if (dis.Title.Trim().ToLower().Contains(search))
+                return true;
+            if (dis.Content.Trim().ToLower().Contains(search))
+                return true;
+
+            if (dis.Answers != null)
+            {
+                foreach (var ans in dis.Answers)
+                {
+                    if (ans.Content.Trim().ToLower().Contains(search))
+                        return true;
+
+                    if (ans.Comments != null)
+                    {
+                        foreach (var comm in ans.Comments)
+                        {
+                            if (comm.Content.Trim().ToLower().Contains(search))
+                                return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
 
         [HttpGet]
         public IActionResult Show(int id, int page = 1, int sortType = 0)
@@ -56,33 +85,47 @@ namespace Proiect.Controllers
 
             SetAccessRights();
 
-            //paginare
             var discussions = db.Discussions.Where(dis => dis.CategoryId == id);
-            //var sortType = Convert.ToInt32(HttpContext.Request.Query["sortType"]); (eroare)
+
             if (sortType == 1) // sortare dupa titlu
             {
-                //discussions = db.Discussions.Where(dis => dis.CategoryId == id).OrderBy(dis => dis.Title);
                 discussions = discussions.OrderBy(dis => dis.Title);
             }
             else if (sortType == 2) // sortare custom (dupa popularitate (numarul de answers + comments per discutie))
             {
-                // discussions = discussions.OrderByDescending(dis => dis.Answers.Count());
-
                 discussions = discussions.OrderByDescending(dis => dis.Answers.Count() + dis.Answers.SelectMany(ans => ans.Comments).Count());
-            } else if (sortType == 3) // sortare dupa numarul de upvote-uri al discutiei
+            }
+            else if (sortType == 3) // sortare dupa numarul de upvote-uri al discutiei
             {
                 discussions = discussions.OrderByDescending(dis => db.Votes.Count(vote => vote.DiscussionId == dis.Id && vote.DidVote == 1) - db.Votes.Count(vote => vote.DiscussionId == dis.Id && vote.DidVote == 2));
             }
+
+            var discussionsList = discussions.ToList();
+
+            // search engine-ul
+            if (Convert.ToString(HttpContext.Request.Query["search"]) != null)
+            {
+                // eliminam spatiile libere din stanga de tot si dreapta de tot
+                var search = Convert.ToString(HttpContext.Request.Query["search"]).Trim().ToLower();
+
+                if (search != "")
+                {
+                    ViewBag.SearchString = search;
+
+                    discussionsList.RemoveAll(dis => !relevantDiscussion(dis, search));
+                }
+            }
+
+            //paginare
             int _perPage = 3;
-            int totalItems = discussions.Count();
-            //var currentPage = Convert.ToInt32(HttpContext.Request.Query["page"]); (eroare)
+            int totalItems = discussionsList.Count();
             var currentPage = page;
             var offset = 0;
             if (!currentPage.Equals(0))
             {
                 offset = (currentPage - 1) * _perPage;
             }
-            var paginatedDiscussions = discussions.Skip(offset).Take(_perPage);
+            var paginatedDiscussions = discussionsList.Skip(offset).Take(_perPage);
             ViewBag.lastPage = Math.Ceiling((float)totalItems / (float)_perPage);
             ViewBag.Discussions = paginatedDiscussions;
 

@@ -24,6 +24,20 @@
     <h2 class="@ViewBag.Alert p-3 rounded-3 text-center mb-5">@ViewBag.Message</h2>
 }
 
+<form method="GET">
+
+    <div class="input-group mb-3">
+
+        <input type="text" class="form-control" placeholder="Search discussions" name="search" value="@ViewBag.SearchString">
+
+        <button class="btn btn-outline-success" type="submit">
+            Search
+        </button>
+
+    </div>
+
+</form>
+
 
 <div class="d-flex justify-content-around bg-light rounded-1">
 
@@ -130,7 +144,7 @@
 
             <li class="page-item">
                 <a class="page-link"
-                    href="/Categories/Show/@(Model.Id)?page=@(Context.Request.Query["page"])&sortType=1">
+                   href="/Categories/Show/@(Model.Id)?page=@(Context.Request.Query["page"])&sortType=1">
                     Sort by discussion name
                 </a>
             </li>
