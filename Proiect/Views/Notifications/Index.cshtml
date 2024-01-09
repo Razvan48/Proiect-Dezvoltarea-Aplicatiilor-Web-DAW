@@ -86,6 +86,16 @@
                         <span>Raspunsul lui: @notification.Answer.User.Email</span>
                     </div>
                 }
+                else if (notification.Type == 7)
+                {
+                    <div style="margin-left: 20px;">
+                        <span>Comentariul de la raspunsul tau a fost editat</span>
+                        <br />
+                        <span>@notification.Discussion.Title.Substring(0, Math.Min(100, notification.Discussion.Title.Length))</span>
+                        <br />
+                        <span>Comentariul lui: @notification.Comment.User.Email</span>
+                    </div>
+                }
 
                 <div style="margin-left: auto;">
                     <form method="post" action="/Notifications/Delete/@notification.Id">

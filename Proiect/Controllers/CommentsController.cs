@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Proiect.Data;
 using Proiect.Models;
 using System.Data;
+using System.Globalization;
 
 namespace Proiect.Controllers
 {
@@ -31,6 +32,23 @@ namespace Proiect.Controllers
             Comment comment = db.Comments.Include("Answer")
                               .Where(c => c.Id == id)
                               .First();
+
+            // sterge notificarile care aveau legatura cu aceast comentariu
+            List<Notification> notifications = db.Notifications.Include("User")
+                                               .Where(not => not.CommentId == comment.Id)
+                                               .ToList();
+
+            foreach (Notification notification in notifications)
+            {
+                if (notification.Read == false)
+                {
+                    notification.User.UnreadNotifications--;
+                }
+
+                db.Notifications.Remove(notification);
+            }
+
+            db.SaveChanges();
 
             // verificam daca discutia ii apartine user-ului care incearca sa editeze /SAU/ daca este admin
             if (comment.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
@@ -76,7 +94,7 @@ namespace Proiect.Controllers
         [HttpPost]
         public IActionResult Edit(int id, Comment requestComment)
         {
-            Comment comment = db.Comments.Include("Answer")
+            Comment comment = db.Comments.Include("Answer").Include("Answer.Discussion").Include("Answer.User")
                               .Where(c => c.Id == id)
                               .First();
 
@@ -89,6 +107,28 @@ namespace Proiect.Controllers
                     comment.Content = requestComment.Content;
                     comment.Date = requestComment.Date;
                     db.SaveChanges();
+
+                    // adauga notificare daca nu comentezi la propriul raspuns
+                    if (comment.Answer.UserId != comment.UserId)
+                    {
+                        Notification NewNotification = new Notification
+                        {
+                            Read = false,
+                            DateMonth = DateTime.Now.ToString("MMMM", CultureInfo.InvariantCulture),
+                            DateDay = DateTime.Now.Day,
+                            UserId = comment.Answer.UserId,
+                            DiscussionId = comment.Answer.DiscussionId,
+                            AnswerId = comment.Answer.Id,
+                            CommentId = comment.Id,
+                            Type = 7
+                        };
+
+                        // incrementeaza nr de notificari necitite ale user-ului
+                        comment.Answer.User.UnreadNotifications++;
+
+                        db.Notifications.Add(NewNotification);
+                        db.SaveChanges();
+                    }
 
                     TempData["message"] = "Comentariul a fost editat";
                     TempData["messageType"] = "alert-success";

@@ -478,13 +478,26 @@ namespace Proiect.Controllers
         [HttpPost]
         public ActionResult Delete(int id)
         {
-            /*Discussion discussion = db.Discussions.Include("Answers").Include("Category").Include("Answers.Comments")
-                                    .Where(dis => dis.Id == id)
-                                    .First();*/
-
             Discussion discussion = db.Discussions.Include("Answers").Include("Answers.Comments")
                         .Where(dis => dis.Id == id)
                         .First();
+
+            // sterge notificarile care aveau legatura cu aceasta discutie
+            List<Notification> notifications = db.Notifications.Include("User")
+                                               .Where(not => not.DiscussionId == discussion.Id)
+                                               .ToList();
+
+            foreach (Notification notification in notifications)
+            {
+                if (notification.Read == false)
+                {
+                    notification.User.UnreadNotifications--;
+                }
+
+                db.Notifications.Remove(notification);
+            }
+
+            db.SaveChanges();
 
             // sterge manual raspunsurile + comentariile de la aceasta discutie
             foreach (Answer answer in discussion.Answers)
@@ -495,18 +508,6 @@ namespace Proiect.Controllers
                 }
 
                 db.Remove(answer);
-            }
-
-            db.SaveChanges();
-
-            // sterge notificarile care aveau legatura cu aceasta discutie
-            List<Notification> notifications = db.Notifications
-                                               .Where(not => not.DiscussionId == discussion.Id)
-                                               .ToList();
-
-            foreach (Notification notification in notifications)
-            {
-                db.Notifications.Remove(notification);
             }
 
             db.SaveChanges();
