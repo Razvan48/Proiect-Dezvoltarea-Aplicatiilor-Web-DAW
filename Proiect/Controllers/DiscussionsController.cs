@@ -65,8 +65,10 @@ namespace Proiect.Controllers
             SetAccessRights();
 
             var answers = db.Answers.Where(ans=> ans.DiscussionId == id);
-            if (sortType == 1) {
+            if (sortType == 1) { // dupa numarul de voturi
                 answers = answers.OrderByDescending(ans => db.Votes.Count(vote => vote.AnswerId == ans.Id && vote.DidVote == 1) - db.Votes.Count(vote => vote.AnswerId == ans.Id && vote.DidVote == 2));
+            } else if (sortType == 2) {
+                answers = answers.OrderByDescending(ans => ans.Comments.Count); // dupa numarul de comentarii
             }
 
             int discussionTotalVotes = db.Votes.Count(vote => vote.DiscussionId == discussion.Id && vote.DidVote == 1) - db.Votes.Count(vote => vote.DiscussionId == discussion.Id && vote.DidVote == 2);
