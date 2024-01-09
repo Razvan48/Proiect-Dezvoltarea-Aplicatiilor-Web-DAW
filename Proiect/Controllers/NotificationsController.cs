@@ -42,7 +42,7 @@ namespace Proiect.Controllers
                 return Redirect("/Home/Index");
             }
 
-            ViewBag.Notifications = db.Notifications.Include("Discussion").Include("Answer")
+            ViewBag.Notifications = db.Notifications.Include("Discussion").Include("Answer").Include("User")
                                     .Where(n => n.UserId == CurrentUserId)
                                     .OrderByDescending(n => n.Id)
                                     .ToList();

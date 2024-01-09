@@ -225,7 +225,7 @@ namespace Proiect.Controllers
                     Dictionary<string, bool> UserIds = new Dictionary<string, bool>();
                     foreach (Comment comment in answer.Comments)
                     {
-                        if (!UserIds.ContainsKey(comment.UserId))
+                        if (answer.UserId != comment.UserId && !UserIds.ContainsKey(comment.UserId))
                         {
                             UserIds.Add(comment.UserId, true);
 

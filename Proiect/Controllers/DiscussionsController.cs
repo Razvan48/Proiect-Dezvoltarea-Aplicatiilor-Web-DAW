@@ -301,19 +301,23 @@ namespace Proiect.Controllers
                 db.Comments.Add(comment);
                 db.SaveChanges();
 
-                Notification NewNotification = new Notification
+                // adauga notificare daca nu comentezi la propriul raspuns
+                if (answer.UserId != comment.UserId)
                 {
-                    Read = false,
-                    DateMonth = DateTime.Now.ToString("MMMM", CultureInfo.InvariantCulture),
-                    DateDay = DateTime.Now.Day,
-                    UserId = answer.UserId,
-                    DiscussionId = answer.DiscussionId,
-                    AnswerId = answer.Id,
-                    Type = 2
-                };
+                    Notification NewNotification = new Notification
+                    {
+                        Read = false,
+                        DateMonth = DateTime.Now.ToString("MMMM", CultureInfo.InvariantCulture),
+                        DateDay = DateTime.Now.Day,
+                        UserId = answer.UserId,
+                        DiscussionId = answer.DiscussionId,
+                        AnswerId = answer.Id,
+                        Type = 2
+                    };
 
-                db.Notifications.Add(NewNotification);
-                db.SaveChanges();
+                    db.Notifications.Add(NewNotification);
+                    db.SaveChanges();
+                }
 
                 TempData["message"] = "Comentariul a fost postat";
                 TempData["messageType"] = "alert-success";
