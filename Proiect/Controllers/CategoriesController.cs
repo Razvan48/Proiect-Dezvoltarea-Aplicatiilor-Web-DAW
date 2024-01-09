@@ -210,6 +210,23 @@ namespace Proiect.Controllers
             // sterge manual discutiile + notificarile + raspunsurile + comentariile din aceasta categorie
             foreach (Discussion discussion in category.Discussions)
             {
+                // sterge notificarile care aveau legatura cu aceasta discutie
+                List<Notification> notifications = db.Notifications.Include("User")
+                                                   .Where(not => not.DiscussionId == discussion.Id)
+                                                   .ToList();
+
+                foreach (Notification notification in notifications)
+                {
+                    if (notification.Read == false)
+                    {
+                        notification.User.UnreadNotifications--;
+                    }
+
+                    db.Notifications.Remove(notification);
+                }
+
+                db.SaveChanges();
+
                 foreach (Answer answer in discussion.Answers)
                 {
                     foreach (Comment comment in answer.Comments)
@@ -218,16 +235,6 @@ namespace Proiect.Controllers
                     }
 
                     db.Answers.Remove(answer);
-                }
-
-                // sterge notificarile care aveau legatura cu aceasta discutie
-                List<Notification> notifications = db.Notifications
-                                                   .Where(not => not.DiscussionId == discussion.Id)
-                                                   .ToList();
-
-                foreach (Notification notification in notifications)
-                {
-                    db.Notifications.Remove(notification);
                 }
 
                 db.Discussions.Remove(discussion); 
