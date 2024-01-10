@@ -9,6 +9,12 @@
             <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity?.Name!</a>
         </li>
         *@
+        @if (@User.IsInRole("Admin"))
+        {
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-area="" asp-controller="Accounts" asp-action="Index">Manage Users</a>
+            </li>
+        }
         <li class="nav-item">
             <a class="nav-link text-dark" asp-area="" asp-controller="Notifications" asp-action="Index" asp-route-id="@UserManager.GetUserId(User)">
                 <i class="bi bi-bell h5" style="position: relative;">

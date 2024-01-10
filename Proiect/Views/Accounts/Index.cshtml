@@ -1,0 +1,89 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<div class="mt-3 text-center">
+    <a class="btn btn-primary" href="/home/index">Go back</a>
+</div>
+
+<div class="container mt-5">
+    @foreach(Proiect.Models.ApplicationUser user in ViewBag.Users)
+    {
+        <div class="container mt-4 text-center">
+            <div class="mt-3 text-center">
+                <h1>@user.FirstName @user.LastName</h1>
+                <img src="@user.Image">
+                <p>Account description: @user.AboutMe</p>
+                <p>Account creation date: @user.Date</p>
+            </div>
+
+            <div class="mt-3 text-center">
+                <a class="btn btn-secondary" href="/ApplicationUser/Show/@user.Id">Show user page</a>
+            </div>
+
+            @if(!UserManager.IsInRoleAsync(user, "Admin").Result)
+            {
+                <div class="mt-3 text-center">
+                    <p>This is a regular user.</p>
+                    <br>
+                    @if (UserManager.GetUserId(User) != user.Id)
+                    {
+                        <a class="btn btn-danger" href="/ApplicationUser/PromoteToAdmin/@user.Id">Promote this user to admin</a>
+                    }
+                    else
+                    {
+                        <p class="btn btn-secondary">This is your own account. You are not allowed to change your own role.</p>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="mt-3 text-center">
+                    <p>This user is an Admin.</p>
+                    <br>
+                    @if (UserManager.GetUserId(User) != user.Id)
+                    {
+                        <a class="btn btn-success" href="/ApplicationUser/DemoteToUser/@user.Id">Demote this user to regular user</a>
+                    }
+                    else
+                    {
+                        <p class="btn btn-secondary">This is your own account. You are not allowed to change your own role.</p>
+                    }
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    .container {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin-top: 20px;
+    }
+
+    h1 {
+        color: #0077cc;
+    }
+
+    .btn-primary {
+        background-color: #0077cc;
+        border-color: #0077cc;
+    }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+    .alert {
+        border-color: #28a745;
+        color: #28a745;
+    }
+</style>

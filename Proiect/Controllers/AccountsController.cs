@@ -30,6 +30,51 @@ namespace Proiect.Controllers
             _env = env;
         }
 
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public IActionResult Index()
+        {
+            var users = db.Users.ToList();
+            ViewBag.Users = users;
+            return View();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public IActionResult PromoteToAdmin(string id)
+        {
+            ApplicationUser user = _userManager.FindByIdAsync(id).Result;
+
+            if (user != null)
+            {
+                if (!_userManager.IsInRoleAsync(user, "Admin").Result)
+                {
+                    var rezultat = _userManager.AddToRoleAsync(user, "Admin").Result;
+                }
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public IActionResult DemoteToUser(string id)
+        {
+            ApplicationUser user = _userManager.FindByIdAsync(id).Result;
+
+            if (user != null)
+            {
+                if (_userManager.IsInRoleAsync(user, "Admin").Result)
+                {
+                    var rezultat = _userManager.RemoveFromRoleAsync(user, "Admin").Result;
+                }
+            }
+
+            return RedirectToAction("Index");
+        }
+
+
         // oricine poate sa vada profilul unui utilizator
         [HttpGet]
         public async Task<ActionResult> Show(string id)
