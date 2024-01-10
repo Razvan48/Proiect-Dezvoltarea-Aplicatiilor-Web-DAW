@@ -17,6 +17,8 @@ namespace Proiect.Controllers
 
         private readonly RoleManager<IdentityRole> _roleManager;
 
+        private static string searchedBefore = "";
+
         public CategoriesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             db = context;
@@ -101,6 +103,8 @@ namespace Proiect.Controllers
 
             var discussionsList = discussions.ToList();
 
+
+
             // search engine-ul
             if (Convert.ToString(HttpContext.Request.Query["search"]) != null)
             {
@@ -113,6 +117,14 @@ namespace Proiect.Controllers
 
                     discussionsList.RemoveAll(dis => !relevantDiscussion(dis, search));
                 }
+
+                searchedBefore = search;
+            }
+            else
+            {
+                ViewBag.SearchString = searchedBefore;
+
+                discussionsList.RemoveAll(dis => !relevantDiscussion(dis, searchedBefore));
             }
 
             //paginare
