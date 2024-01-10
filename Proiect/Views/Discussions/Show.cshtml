@@ -21,14 +21,6 @@
 @* Afisare intreabre *@
 <h2>@Model.Title</h2>
 
-@* TODO: schimba fontul *@
-<div class="d-flex">
-    <div class="d-flex">
-        <span>Viewed</span>
-        <div>: nr_vizionari</div>
-    </div>
-</div>
-
 <hr style="height: 5px; background-color: #e7700d; opacity: 0.75;" />
 
 <div class="container">
@@ -128,7 +120,6 @@
     <div class="container">
         <div class="row">
             <div class="col-md-1 d-flex justify-content-center">
-                @* TODO: schimba fontul + dimensiunea *@
                 <div class="d-inline-flex flex-column">
                     <form method="post" action="/Answers/UpvoteAnswer/@answer.Id">
                         <button type="submit" class="@(answer.userVoted == 1 ? "btn btn-success" : "btn btn-outline-success")" onclick="storeScrollPosition();">
@@ -201,7 +192,6 @@
                                     </div>
                                 }
                             }
-                        
 
                             @if (ViewBag.isAdmin && @answer.hasAward) {
                                 <div>
@@ -296,9 +286,6 @@
                             <button class="btn btn-success" type="submit" onclick="storeScrollPosition();">Posteaza</button>
                         </div>
                     </div>
-
-                    @* TODO: delete *@
-                    @* Html.ValidationSummary(false, "", new { @class = "text-danger" }) *@
                 </form>
                 <hr style="margin-bottom: 5px; margin-top: 5px;" />
             </div>
@@ -320,7 +307,4 @@
         <br />
     </form>
 </div>
-
-
-@* TODO: Related questions *@
 

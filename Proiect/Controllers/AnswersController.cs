@@ -208,8 +208,11 @@ namespace Proiect.Controllers
 
         [Authorize(Roles = "User, Admin")]
         [HttpPost]
-        public IActionResult GiveAward(int id) {
-            Answer answer = db.Answers.Find(id);
+        public IActionResult GiveAward(int id) 
+        {
+            Answer answer = db.Answers.Include("User")
+                            .Where(ans => ans.Id == id)
+                            .First();
 
             Discussion discussion = db.Discussions.Find(answer.DiscussionId);
 
@@ -235,6 +238,23 @@ namespace Proiect.Controllers
                 answer.hasAward = true;
             }
 
+            // adauga notificare catre utilizator care a primit award
+            Notification NewNotification1 = new Notification
+            {
+                Read = false,
+                DateMonth = DateTime.Now.ToString("MMMM", CultureInfo.InvariantCulture),
+                DateDay = DateTime.Now.Day,
+                UserId = answer.UserId,
+                DiscussionId = answer.DiscussionId,
+                AnswerId = answer.Id,
+                Type = 3
+            };
+
+            // incrementeaza nr de notificari necitite ale user-ului
+            answer.User.UnreadNotifications++;
+
+            db.Notifications.Add(NewNotification1);
+
             db.Awards.Add(x);
             db.SaveChanges();
 
@@ -253,6 +273,18 @@ namespace Proiect.Controllers
                 answer.hasAward = false;
                 db.Awards.Remove(existingAward);
             }
+
+            // sterge notificarea cu award pt acest raspuns
+            Notification notification = db.Notifications.Include("User")
+                                        .Where(not => not.AnswerId == answer.Id && not.Type == 3)
+                                        .First();
+
+            if (notification.Read == false)
+            {
+                notification.User.UnreadNotifications--;
+            }
+
+            db.Notifications.Remove(notification);
 
             db.SaveChanges();
 
