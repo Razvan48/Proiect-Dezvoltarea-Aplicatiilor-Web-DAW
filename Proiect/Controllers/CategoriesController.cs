@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using Proiect.Data;
+using Proiect.Data.Migrations;
 using Proiect.Models;
 using System.Data;
 
@@ -226,6 +228,15 @@ namespace Proiect.Controllers
                 List<Notification> notifications = db.Notifications.Include("User")
                                                    .Where(not => not.DiscussionId == discussion.Id)
                                                    .ToList();
+                discussion.didAward = false;
+                Award awardToRemove = db.Awards.FirstOrDefault(a => a.DiscussionId == discussion.Id);
+                if (awardToRemove != null) {
+                    Answer answer = db.Answers.Find(awardToRemove.AnswerId);
+                    if (answer != null) {
+                        answer.hasAward = false;
+                    }
+                    db.Awards.Remove(awardToRemove);
+                }
 
                 foreach (Notification notification in notifications)
                 {
@@ -251,7 +262,7 @@ namespace Proiect.Controllers
 
                 db.Discussions.Remove(discussion); 
             }
-            
+
             db.SaveChanges();
 
             // sterge categoria

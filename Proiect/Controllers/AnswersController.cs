@@ -48,6 +48,15 @@ namespace Proiect.Controllers
                 db.Notifications.Remove(notification);
             }
 
+            Award awardToRemove = db.Awards.SingleOrDefault(a => a.AnswerId == id);
+            if (awardToRemove != null) {
+                Discussion discussion = db.Discussions.Find(awardToRemove.DiscussionId);
+                if (discussion != null) {
+                    discussion.didAward = null;
+                }
+                db.Awards.Remove(awardToRemove);
+            }
+
             db.SaveChanges();
 
             // sterge manual toate comentariile de la acest raspuns
@@ -215,6 +224,11 @@ namespace Proiect.Controllers
                             .First();
 
             Discussion discussion = db.Discussions.Find(answer.DiscussionId);
+            var existingAward = db.Awards.FirstOrDefault(a => a.DiscussionId == discussion.Id);
+
+            if (existingAward != null) {
+                return Redirect("/Discussions/Show/" + answer.DiscussionId);
+            }
 
             Award x = new Award { DidAward = false, DiscussionId = discussion.Id };
 
@@ -231,6 +245,9 @@ namespace Proiect.Controllers
                 discussion.didAward == false) {
                 if (answer.UserId != null) {
                     x.UserId = answer.UserId;
+                }
+                if (answer.Id != null) {
+                    x.AnswerId = answer.Id;
                 }
 
                 x.DidAward = true;

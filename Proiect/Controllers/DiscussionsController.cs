@@ -497,6 +497,19 @@ namespace Proiect.Controllers
                 db.Notifications.Remove(notification);
             }
 
+            discussion.didAward = false;
+            Award awardToRemove = db.Awards.FirstOrDefault(a => a.DiscussionId == id);
+
+            if (awardToRemove != null) {
+                Answer answer = db.Answers.Find(awardToRemove.AnswerId);
+
+                if (answer != null) {
+                    answer.hasAward = false;
+                }
+
+                db.Awards.Remove(awardToRemove);
+            }
+
             db.SaveChanges();
 
             // sterge manual raspunsurile + comentariile de la aceasta discutie
