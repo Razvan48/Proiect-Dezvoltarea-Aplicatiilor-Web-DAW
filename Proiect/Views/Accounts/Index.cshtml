@@ -18,7 +18,7 @@
             </div>
 
             <div class="mt-3 text-center">
-                <a class="btn btn-secondary" href="/ApplicationUser/Show/@user.Id">Show user page</a>
+                <a class="btn btn-secondary" href="/Accounts/Show/@user.Id">Show user page</a>
             </div>
 
             @if(!UserManager.IsInRoleAsync(user, "Admin").Result)
@@ -28,7 +28,7 @@
                     <br>
                     @if (UserManager.GetUserId(User) != user.Id)
                     {
-                        <a class="btn btn-danger" href="/ApplicationUser/PromoteToAdmin/@user.Id">Promote this user to admin</a>
+                        <a class="btn btn-danger" href="/Accounts/PromoteToAdmin/@user.Id">Promote this user to admin</a>
                     }
                     else
                     {
@@ -43,7 +43,7 @@
                     <br>
                     @if (UserManager.GetUserId(User) != user.Id)
                     {
-                        <a class="btn btn-success" href="/ApplicationUser/DemoteToUser/@user.Id">Demote this user to regular user</a>
+                        <a class="btn btn-success" href="/Accounts/DemoteToUser/@user.Id">Demote this user to regular user</a>
                     }
                     else
                     {
