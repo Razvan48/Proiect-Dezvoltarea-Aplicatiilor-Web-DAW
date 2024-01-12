@@ -69,6 +69,11 @@ namespace Proiect.Controllers
             // verificam daca discutia ii apartine user-ului care incearca sa editeze /SAU/ daca este admin
             if (answer.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin")) {
                 db.Answers.Remove(answer);
+                if (answer.IsCode) {
+                    var existingCode = db.Codespaces.FirstOrDefault(c => c.AnswerId == answer.Id);
+                    if (existingCode != null)
+                        db.Codespaces.Remove(existingCode);
+                }
                 db.SaveChanges();
 
                 TempData["message"] = "Raspunsul a fost sters";
@@ -396,6 +401,8 @@ namespace Proiect.Controllers
                 return Redirect("/Discussions/Show/" + answer.DiscussionId);
             }
         }
+
     }
+
 }
 

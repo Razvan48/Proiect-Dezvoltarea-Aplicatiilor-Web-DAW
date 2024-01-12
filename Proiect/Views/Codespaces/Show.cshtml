@@ -1,0 +1,55 @@
+﻿    @model Proiect.Models.Codespace
+
+    @{
+        ViewData["Title"] = "Codespace Show";
+    }
+
+    <div class="d-flex justify-content-around bg-light rounded-1">
+        <a class="btn btn-primary" href="/Discussions/Show/@Model.DiscussionId">Back to the Discussion</a>
+    </div>
+
+    <style>
+        textarea {
+            font-family: 'Courier New', monospace;
+            width: 100%;
+            height: 200px;
+            padding: 10px;
+        }
+    </style>
+
+    <h2>@ViewData["Title"]</h2>
+    <hr />
+
+    @using (Html.BeginForm("CompileCodeRun", "Codespaces", FormMethod.Get, new { id = "myForm" })) {
+        @Html.HiddenFor(m => m.AnswerId)
+        <div class="form-group">
+            @Html.LabelFor(m => m.Content, "Code:")
+            <div class="code-editor-container">
+                @Html.TextAreaFor(m => m.Content, new { @class = "form-control code-editor", @readonly = "readonly" })
+                @Html.Hidden("code", @Model.Content)
+                @Html.ValidationMessageFor(m => m.Content, null, new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Language, "Selected Language:")
+            <span class="form-control" id="language">@Model.Language</span>
+            @Html.HiddenFor(m => m.Language)
+        </div>
+
+        <input type="hidden" name="selectedLanguage" id="selectedLanguage" value="@Model.Language" />
+
+        <button type="submit" name="action" value="Run" class="btn btn-primary btn-success">Run Code</button>
+    }
+
+    @if (!string.IsNullOrEmpty(ViewBag.Output)) {
+        <div class="container mt-5">
+            <h3>Output:</h3>
+            <div class="mt-4 text-center">
+                @Html.Raw(ViewBag.Output)
+            </div>
+        </div>
+    }
+

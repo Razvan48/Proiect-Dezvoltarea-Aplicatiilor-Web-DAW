@@ -29,6 +29,8 @@ namespace Proiect.Models
         public string? UserId { get; set; }
 
         public virtual ApplicationUser? User { get; set; }
+        
+        public bool IsCode { get; set; }
     }
 }
 

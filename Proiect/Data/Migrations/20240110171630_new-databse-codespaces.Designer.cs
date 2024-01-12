@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Proiect.Data;
 
@@ -11,9 +12,10 @@ using Proiect.Data;
 namespace Proiect.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240110171630_new-databse-codespaces")]
+    partial class newdatabsecodespaces
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -179,9 +181,6 @@ namespace Proiect.Data.Migrations
 
                     b.Property<int?>("DiscussionId")
                         .HasColumnType("int");
-
-                    b.Property<bool>("IsCode")
-                        .HasColumnType("bit");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
@@ -349,18 +348,9 @@ namespace Proiect.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("DiscussionId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Language")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AnswerId");
-
-                    b.HasIndex("DiscussionId");
 
                     b.ToTable("Codespaces");
                 });
@@ -609,13 +599,7 @@ namespace Proiect.Data.Migrations
                         .WithMany()
                         .HasForeignKey("AnswerId");
 
-                    b.HasOne("Proiect.Models.Discussion", "Discussion")
-                        .WithMany()
-                        .HasForeignKey("DiscussionId");
-
                     b.Navigation("Answer");
-
-                    b.Navigation("Discussion");
                 });
 
             modelBuilder.Entity("Proiect.Models.Comment", b =>

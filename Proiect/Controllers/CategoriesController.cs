@@ -252,6 +252,12 @@ namespace Proiect.Controllers
 
                 foreach (Answer answer in discussion.Answers)
                 {
+                    if (answer.IsCode) {
+                        var existingCode = db.Codespaces.FirstOrDefault(c => c.AnswerId == answer.Id);
+                        if (existingCode != null)
+                            db.Codespaces.Remove(existingCode);
+                    }
+
                     foreach (Comment comment in answer.Comments)
                     {
                         db.Comments.Remove(comment);

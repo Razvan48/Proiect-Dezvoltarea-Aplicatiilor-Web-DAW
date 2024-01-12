@@ -18,6 +18,7 @@ namespace Proiect.Data
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet <Award> Awards { get; set; }
+        public DbSet <Codespace> Codespaces { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
             base.OnModelCreating(modelBuilder);

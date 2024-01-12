@@ -9,7 +9,7 @@ using Proiect.Models;
 using System.Globalization;
 using System.Linq;
 
-namespace Proiect.Controllers
+namespace Proiect.Controllers   
 {
     public class DiscussionsController : Controller
     {
@@ -253,6 +253,7 @@ namespace Proiect.Controllers
             {
                 answer.Content = sanitizer.Sanitize(answer.Content);
                 answer.Content = (answer.Content);
+                answer.IsCode = false;
 
                 db.Answers.Add(answer);
                 db.SaveChanges();
@@ -515,6 +516,13 @@ namespace Proiect.Controllers
             // sterge manual raspunsurile + comentariile de la aceasta discutie
             foreach (Answer answer in discussion.Answers)
             {
+
+                if (answer.IsCode) {
+                    var existingCode = db.Codespaces.FirstOrDefault(c => c.AnswerId == answer.Id);
+                    if (existingCode != null)
+                        db.Codespaces.Remove(existingCode);
+                }
+
                 foreach (Comment comment in answer.Comments)
                 {
                     db.Remove(comment);

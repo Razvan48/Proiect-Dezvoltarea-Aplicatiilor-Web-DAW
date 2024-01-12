@@ -158,22 +158,45 @@
                         <i class="bi bi-award-fill" style="color: gold; font-size: 24px;"></i>
                     }
 
-                    <p>@Html.Raw(answer.Content)</p>
-                    <br />
+                    if (!answer.IsCode) {
+                        <p>@Html.Raw(answer.Content)</p>
+                        <br />
+                    } else {
+                        <form method="post" action="/Codespaces/Show/@answer.Id">
+                            <button type="submit" class="btn btn-primary" style="border: none; font-size: 15px;" onclick="storeScrollPosition();">
+                                <i class="bi bi-play-fill"></i> Run Code
+                            </button>
+                        </form>
+                    }
 
                     <div class="d-flex justify-content-between">
                         @if (answer.UserId == ViewBag.CurrentUser || ViewBag.IsAdmin)
                         {
-                            <div class="d-flex align-items-center">
-                                <div>
-                                    <a class="btn btn-sm btn-outline-primary" style="border: none; font-size: 14px;" href="/Answers/Edit/@answer.Id" onclick="storeScrollPosition();"><i class="bi bi-pencil-square"></i>Editeaza</a>
+
+                            if (!answer.IsCode)
+                            {
+                                <div class="d-flex align-items-center">
+                                    <div>
+                                        <a class="btn btn-sm btn-outline-primary" style="border: none; font-size: 14px;" href="/Answers/Edit/@answer.Id" onclick="storeScrollPosition();"><i class="bi bi-pencil-square"></i>Editeaza</a>
+                                    </div>
+                                    <div>
+                                        <form method="post" action="/Answers/Delete/@answer.Id">
+                                            <button class="btn btn-sm btn-outline-danger" style="border: none; font-size: 14px;" type="submit"><i class="bi bi-trash"></i>Sterge</button>
+                                        </form>
+                                    </div>
                                 </div>
-                                <div>
-                                    <form method="post" action="/Answers/Delete/@answer.Id">
-                                        <button class="btn btn-sm btn-outline-danger" style="border: none; font-size: 14px;" type="submit"><i class="bi bi-trash"></i>Sterge</button>
-                                    </form>
+                            } else {
+                                <div class="d-flex align-items-center">
+                                    <div>
+                                        <a class="btn btn-sm btn-outline-primary" style="border: none; font-size: 14px;" href="/Codespaces/Edit/@answer.Id" onclick="storeScrollPosition();"><i class="bi bi-pencil-square"></i>Editeaza</a>
+                                    </div>
+                                    <div>
+                                        <form method="post" action="/Answers/Delete/@answer.Id">
+                                            <button class="btn btn-sm btn-outline-danger" style="border: none; font-size: 14px;" type="submit"><i class="bi bi-trash"></i>Sterge</button>
+                                        </form>
+                                    </div>
                                 </div>
-                            </div>
+                            }
                         }
                         else
                         {
@@ -297,7 +320,7 @@
 @* Afisarea formularului in care se poate adauga un raspuns nou *@
 <div class="container">
     <h4>Adauga raspunsul tau</h4>
-    <form method="post" action="/Discussions/AddAnswer/@Model.Id">
+    <form method="post" action="/Discussions/1`@Model.Id">
         <input type="hidden" name="DiscussionId" value="@Model.Id" />
 
         <textarea class="summernote" name="Content"></textarea>
@@ -306,5 +329,13 @@
         <button class="btn btn-success" type="submit" onclick="storeScrollPosition();">Posteaza raspunsul tau</button>
         <br />
     </form>
+
+<form method="get" action="/Codespaces/New">
+    <input type="hidden" name="discussionId" value="@Model.Id" />
+    <input type="hidden" name="code" value="//This is the code editor"/>
+    <input type="hidden" name="language" value="csharp" />
+    <br />
+    <button class="btn btn-success" type="submit" onclick="storeScrollPosition();">Posteaza codul tau</button>
+</form>
 </div>
 
