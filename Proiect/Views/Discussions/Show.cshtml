@@ -320,7 +320,7 @@
 @* Afisarea formularului in care se poate adauga un raspuns nou *@
 <div class="container">
     <h4>Adauga raspunsul tau</h4>
-    <form method="post" action="/Discussions/1`@Model.Id">
+    <form method="post" action="/Discussions/AddAnswer/@Model.Id">
         <input type="hidden" name="DiscussionId" value="@Model.Id" />
 
         <textarea class="summernote" name="Content"></textarea>
