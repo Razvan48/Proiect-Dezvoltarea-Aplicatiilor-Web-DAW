@@ -33,7 +33,7 @@ namespace Proiect.Models
             Type:
             1. New Answer       -> notificare pt cel care a deschis discutia
             2. New Comment      -> notificare pt cel care a postat raspunsul
-            3. New Best Answer  -> TODO
+            3. New Best Answer  -> notificare pt cel care a postat raspunsul
             4. Edit Discussion  -> notificare pt toti cei care au adaugat un comentariu
             5. Edit Answer      -> notificare pt toti cei care au comentat
             6. Edit Answer      -> notificare pt cel care a deschis discutia

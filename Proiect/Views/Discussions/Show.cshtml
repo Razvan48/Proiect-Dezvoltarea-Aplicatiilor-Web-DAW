@@ -26,7 +26,6 @@
 <div class="container">
     <div class="row">
         <div class="col-md-1 d-flex justify-content-center">
-            @* TODO: schimba fontul + dimensiunea *@
             <div class="d-inline-flex flex-column">
                 <form method="post" action="/Discussions/Upvote/@Model.Id">
                     <button type="submit" class="@(ViewBag.HasVoted == 1 ? "btn btn-success" : "btn btn-outline-success")" onclick="storeScrollPosition();">
@@ -110,7 +109,6 @@
         </a>
     </div>
 </div>
-<div>Pagini cu raspunsuri</div>
 
 <br />
 <br />
@@ -133,7 +131,6 @@
                         </button>
                     </form>
                 </div>
-                @* TODO: adauga bifa *@
             </div>
 
             <div class="col">
