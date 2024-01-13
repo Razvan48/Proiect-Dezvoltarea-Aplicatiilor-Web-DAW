@@ -20,6 +20,14 @@
                 <div><i class="bi bi-person-lines-fill"></i> Nume: @Model.LastName</div>
                 <div><i class="bi bi-person-lines-fill"></i> Prenume: @Model.FirstName</div>
                 <div><i class="bi bi-calendar4-week"></i> Data inregistrare: @Model.Date</div>
+                @if (Model.CoolDownEnd >= DateTime.Now)
+                {
+                    <div><i class="bi bi-calendar4-week"></i> Acest utilizator este in cooldown pana la data de @(Model.CoolDownEnd) (@ViewBag.Days zile, @ViewBag.Hours ore, @ViewBag.Minutes minute, @ViewBag.Seconds secunde)</div>
+                }
+                else
+                {
+                    <div><i class="bi bi-calendar4-week"></i> Acest utilizator nu este in cooldown.</div>
+                }
                 <div style="margin-top: 10px; margin-bottom: 10px;">
                     <i class="bi bi-person"></i> Rol utilizator
                     <span class="rounded-pill bg-secondary mr-2 px-4 py-2 text-white">@ViewBag.Role</span>

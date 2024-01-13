@@ -30,6 +30,63 @@ namespace Proiect.Controllers
             _env = env;
         }
 
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public IActionResult UnCoolDown(string id)
+        {
+            var user = db.ApplicationUsers.Find(id);
+
+            if (user != null)
+            {
+                user.CoolDownEnd = DateTime.MinValue;
+                db.SaveChanges();
+
+                TempData["message"] = "User uncooled";
+                TempData["messageType"] = "alert-info";
+            }
+            else
+            {
+                TempData["message"] = "User id does not exist";
+                TempData["messageType"] = "alert-info";
+            }
+
+            return RedirectToAction("Index");
+        }
+
+
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public IActionResult SetCoolDown(string id, DateTime coolDownEnd)
+        {
+            if (coolDownEnd < DateTime.Now)
+            {
+                TempData["message"] = "Invalid cooldown date";
+                TempData["messageType"] = "alert-info";
+
+                return RedirectToAction("Index");
+            }
+
+            var user = db.ApplicationUsers.Find(id);
+
+            if (user != null)
+            {
+                user.CoolDownEnd = coolDownEnd;
+                db.SaveChanges();
+
+                TempData["message"] = "Cooldown successfully set";
+                TempData["messageType"] = "alert-info";
+            }
+            else
+            {
+                TempData["message"] = "User id does not exist";
+                TempData["messageType"] = "alert-info";
+            }
+
+            return RedirectToAction("Index");
+        }
+
+
 
         [Authorize(Roles = "Admin")]
         [HttpGet]
@@ -37,6 +94,13 @@ namespace Proiect.Controllers
         {
             var users = db.Users.ToList();
             ViewBag.Users = users;
+
+            if (TempData.ContainsKey("message"))
+            {
+                ViewBag.Message = TempData["message"].ToString();
+                ViewBag.Alert = TempData["messageType"];
+            }
+
             return View();
         }
 
@@ -107,6 +171,18 @@ namespace Proiect.Controllers
 
             var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
             ViewBag.Role = role;
+
+            if (DateTime.Now <= user.CoolDownEnd)
+            {
+                var timeDiff = user.CoolDownEnd - DateTime.Now;
+                ViewBag.Days = timeDiff.Days;
+                timeDiff -= TimeSpan.FromDays(timeDiff.Days);
+                ViewBag.Hours = timeDiff.Hours;
+                timeDiff -= TimeSpan.FromHours(timeDiff.Hours);
+                ViewBag.Minutes = timeDiff.Minutes;
+                timeDiff -= TimeSpan.FromMinutes(timeDiff.Minutes);
+                ViewBag.Seconds = timeDiff.Seconds;
+            }
 
             return View(user);
         }

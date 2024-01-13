@@ -2,6 +2,11 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
+@if (ViewBag.Message != null)
+{
+    <h2 class="@ViewBag.Alert p-3 rounded-3 text-center mb-5">@ViewBag.Message</h2>
+}
+
 <div class="mt-3 text-center">
     <a class="btn btn-primary" href="/home/index">Go back</a>
 </div>
@@ -50,6 +55,43 @@
                         <p class="btn btn-secondary">This is your own account. You are not allowed to change your own role.</p>
                     }
                 </div>
+            }
+            @if (user.CoolDownEnd >= DateTime.Now)
+            {
+                <div class="mt-3 text-center">
+                <p>This user is still in cooldown mode.</p>
+                <a class="btn btn-danger" href="/Accounts/UnCoolDown/@user.Id">Uncool this user</a>
+                <br />
+                </div>
+            }
+            else
+            {
+                <div class="mt-3 text-center">
+                <p>This user is not in cooldown mode.</p>
+                <br />
+                </div>
+            }
+            <br>
+            <br>
+            <br>
+            @if (UserManager.GetUserId(User) != user.Id) 
+            {
+                <form method="POST" action="/Accounts/SetCoolDown">
+                    <div class="input-group mb-3">
+                        <input type="hidden" class="form-control" name="id" value="@user.Id" />
+
+                        <input type="datetime-local" class="form-control" name="coolDownEnd" value="@DateTime.Now" />
+
+                        <button class="btn btn-outline-success" type="submit">
+                            Set cooldown
+                        </button>
+                    </div>
+                </form>
+            }
+            else
+            {
+                <p>You can not modify your own cooldown.</p>
+                <br />
             }
         </div>
     }

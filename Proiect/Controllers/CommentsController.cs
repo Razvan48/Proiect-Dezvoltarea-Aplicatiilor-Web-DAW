@@ -68,7 +68,7 @@ namespace Proiect.Controllers
             return Redirect("/Discussions/Show/" + comment.Answer.DiscussionId);
         }
 
-        [Authorize(Roles = "User,Editor,Admin")]
+        [Authorize(Roles = "User,Admin")]
         [HttpGet]
         public IActionResult Edit(int id)
         {

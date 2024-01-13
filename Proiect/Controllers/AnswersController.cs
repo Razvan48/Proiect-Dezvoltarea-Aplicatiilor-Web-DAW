@@ -28,7 +28,8 @@ namespace Proiect.Controllers
         // Sterge din baza de date un raspuns postat
         [Authorize(Roles = "User,Admin")]
         [HttpPost]
-        public IActionResult Delete(int id) {
+        public IActionResult Delete(int id)
+        {
             Answer answer = db.Answers.Include("Comments")
                             .Where(ans => ans.Id == id)
                             .First();
@@ -88,7 +89,8 @@ namespace Proiect.Controllers
 
         [Authorize(Roles = "User,Admin")]
         [HttpPost]
-        public IActionResult UpvoteAnswer(int id) {
+        public IActionResult UpvoteAnswer(int id)
+        {
             ApplicationUser currentUser = _userManager.GetUserAsync(User).Result;
 
             Answer answer = db.Answers.Include(a => a.Discussion)
@@ -147,7 +149,8 @@ namespace Proiect.Controllers
 
         [Authorize(Roles = "User,Admin")]
         [HttpPost]
-        public IActionResult DownvoteAnswer(int id) {
+        public IActionResult DownvoteAnswer(int id)
+        {
             ApplicationUser currentUser = _userManager.GetUserAsync(User).Result;
 
             Answer answer = db.Answers.Include(a => a.Discussion)
@@ -206,7 +209,8 @@ namespace Proiect.Controllers
 
         [Authorize(Roles = "User,Editor,Admin")]
         [HttpGet]
-        public IActionResult Edit(int id) {
+        public IActionResult Edit(int id)
+        {
             Answer answer = db.Answers.Find(id);
 
             if (answer.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin")) {

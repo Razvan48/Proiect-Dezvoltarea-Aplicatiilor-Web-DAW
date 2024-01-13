@@ -28,6 +28,8 @@ namespace Proiect.Models
 
         public int? UnreadNotifications { get; set; }
 
+        public DateTime CoolDownEnd { get; set; }
+
         public ApplicationUser()
         {
             FirstName = "-";
@@ -36,6 +38,7 @@ namespace Proiect.Models
             AboutMe = "-";
             Date = DateTime.Now;
             UnreadNotifications = 0;
+            CoolDownEnd = DateTime.MinValue;
         }
     }
 }
