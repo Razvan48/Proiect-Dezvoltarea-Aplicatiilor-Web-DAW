@@ -145,7 +145,9 @@ namespace Proiect.Areas.Identity.Pages.Account
                     else
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
+                        //return LocalRedirect(returnUrl);
+                        //return LocalRedirect("Home/Index");
+                        return RedirectToAction("Index", "Home");
                     }
                 }
                 foreach (var error in result.Errors)
