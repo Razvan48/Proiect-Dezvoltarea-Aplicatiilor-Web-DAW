@@ -1,5 +1,5 @@
 # Proiect-Dezvoltarea-Aplicatiilor-Web-DAW
-Proiect Dezvoltarea Aplicatiilor Web (DAW) Anul 2, Semestrul 1, Facultatea de Matematica si Informatica, Universitatea din Bucuresti
+&emsp; Proiect Dezvoltarea Aplicatiilor Web (DAW) Anul 2, Semestrul 1, Facultatea de Matematica si Informatica, Universitatea din Bucuresti <br/>
 
 Capatina Razvan-Nicolae ($252$) <br/> 
 Buca Mihnea-Vicentiu ($252$) <br/>
